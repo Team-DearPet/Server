@@ -29,7 +29,6 @@ public class User {
 
     private LocalDateTime createdAt;
     private Boolean isDeleted;
-    private LocalDateTime deletedAt;
 
     public enum OAuthType {
         KAKAO, GOOGLE, NONE
