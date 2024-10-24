@@ -19,7 +19,7 @@ public class Pet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long petId;                 // PK
-    private String name;             // 펫 이름
+    private String name;                // 펫 이름
     private String species;             // 펫 종류
     private int age;                    // 펫 나이
     private boolean neutered = false;   // 펫 중성화 여부
@@ -35,7 +35,7 @@ public class Pet {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    private User user;                  // 펫 : 사용자 = N : 1
 
     public enum Gender{
         MALE, FEMALE
