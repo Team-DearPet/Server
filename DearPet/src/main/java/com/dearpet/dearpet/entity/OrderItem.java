@@ -6,6 +6,11 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 
+/*
+ * OrderItem Entity
+ * @Author 위지훈
+ * @Since 2024.10.24
+ */
 @Entity
 @Getter
 @Setter
@@ -14,7 +19,7 @@ public class OrderItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int orderItemId;        // PK
+    private Long orderItemId;       // PK
     private int quantity;           // 수량
 
     @Column(precision = 10, scale = 2)
