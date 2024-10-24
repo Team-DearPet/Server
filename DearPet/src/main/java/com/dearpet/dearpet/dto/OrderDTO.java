@@ -16,21 +16,21 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class OrderDTO {
-    private Long orderId;           // PK
-    private LocalDateTime date;     // 주문일
-    private String address;         // 수령 주소
-    private String requirement;     // 배송 요청사항
-    private LocalDateTime eta;      // 배송 예정일
-    private Order.Status status;    // 배송 상태
-    private BigDecimal price;       // 총 금액
-    private Long userId;            // 사용자 ID
+    private Long orderId;               // PK
+    private LocalDateTime date;         // 주문일
+    private String address;             // 수령 주소
+    private String requirement;         // 배송 요청사항
+    private LocalDateTime eta;          // 배송 예정일
+    private Order.OrderStatus status;   // 배송 상태
+    private BigDecimal price;           // 총 금액
+    private Long userId;                // 사용자 ID
 
     // 기본 생성자
     public OrderDTO() {
     }
 
     // 생성자
-    public OrderDTO(Long orderId, LocalDateTime date, String address, String requirement, LocalDateTime eta, Long userId, BigDecimal price, Order.Status status) {
+    public OrderDTO(Long orderId, LocalDateTime date, String address, String requirement, LocalDateTime eta, Long userId, BigDecimal price, Order.OrderStatus status) {
         this.orderId = orderId;
         this.date = date;
         this.address = address;
