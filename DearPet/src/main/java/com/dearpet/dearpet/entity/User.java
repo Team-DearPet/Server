@@ -2,8 +2,12 @@ package com.dearpet.dearpet.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
 
 @Entity
 @Getter
@@ -24,8 +28,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     private OAuthType oauth;    // 소셜 로그인 여부
 
-    @Enumerated(EnumType.STRING)
-    private UserGrade grade;    // 회원 등급
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
 
     private LocalDateTime createdAt;
     private Boolean isDeleted;
@@ -36,5 +41,17 @@ public class User {
 
     public enum UserGrade {
         MEMBER, ADMIN
+    }
+
+    // 권한 정보를 GrantedAuthority로 변환
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singletonList(new SimpleGrantedAuthority(role.getRoleName()));
+    }
+
+    public User update(String username, String nickname, String email) {
+        this.username = username;
+        this.nickname = nickname;
+        this.email = email;
+        return this;
     }
 }
