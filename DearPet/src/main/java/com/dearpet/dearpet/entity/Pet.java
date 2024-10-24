@@ -5,6 +5,11 @@ import lombok.*;
 
 import java.math.BigDecimal;
 
+/*
+ * Pet Entity
+ * @Author 위지훈
+ * @Since 2024.10.23
+ */
 @Entity
 @Getter
 @Setter
