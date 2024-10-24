@@ -3,7 +3,6 @@ package com.dearpet.dearpet.dto;
 import com.dearpet.dearpet.entity.Pet;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.security.core.parameters.P;
 
 import java.math.BigDecimal;
 
