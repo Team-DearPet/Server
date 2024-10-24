@@ -28,14 +28,14 @@ public class UserController {
     }
 
     // 로그인
-    @PostMapping("/login")
+    @PostMapping("/auth/login")
     public ResponseEntity<String> login(@RequestBody LoginRequestDTO loginRequest) {
         String token = userService.login(loginRequest);
         return ResponseEntity.ok(token);
     }
 
     // 로그아웃
-    @GetMapping("/logout")
+    @GetMapping("/auth/logout")
     public ResponseEntity<String> logout() {
         userService.logout();
         return ResponseEntity.ok("Logged out successfully");
