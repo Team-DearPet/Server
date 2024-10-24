@@ -32,13 +32,13 @@ public class OrderService {
     private UserRepository userRepository;
 
     // 사용자 주문 내역 조회
-    public List<OrderDTO> getOrderByUserId(Long userId){
+    public List<OrderDTO> getOrderByUserId(Long userId) {
         List<Order> order = orderRepository.findByUserUserId(userId);
         return order.stream().map(this::convertToOrderDTO).collect(Collectors.toList());
     }
 
     // 주문 생성
-    public OrderDTO createOrder(OrderDTO orderDTO){
+    public OrderDTO createOrder(OrderDTO orderDTO) {
         Order order = new Order();
         order.setDate(orderDTO.getDate());
         order.setStatus(orderDTO.getStatus());
@@ -48,32 +48,36 @@ public class OrderService {
         order.setEta(orderDTO.getEta());
 
         User user = userRepository.findById(orderDTO.getUserId())
-                        .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("User not found"));
         order.setUser(user);
 
         orderRepository.save(order);
         return convertToOrderDTO(order);
     }
-/*
+
     // 주문 정보 상세 조회
-    public List<OrderItemDTO> getOrderItemByOrderId(Long orderId){
-        List<OrderItem> orderItem = orderItemRepository.findByOrderOrderId(orderId);
-        return orderItem.stream().map(this::convertToOrderItemDTO).collect(Collectors.toList());
+    public OrderDTO getOrderByOrderId(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+        return convertToOrderDTO(order);
     }
-*/
+
     // 주문 취소 (주문 상태만 "CANCELLED"로 변경)
     public OrderDTO cancelOrder(Long orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("order not found"));
 
-        order.setStatus(Order.Status.CANCELLED);
+        order.setStatus(Order.OrderStatus.CANCELLED);
 
         Order cancelledOrder = orderRepository.save(order);
         return convertToOrderDTO(cancelledOrder);
     }
 
     // 주문한 상품 목록 조회
-
+    public List<OrderItemDTO> getOrderItemByOrderId(Long orderId) {
+        List<OrderItem> orderItems = orderItemRepository.findByOrderOrderId(orderId);
+        return orderItems.stream().map(this::convertToOrderItemDTO).collect(Collectors.toList());
+    }
 
     // 주문 Entity -> DTO 변환
     private OrderDTO convertToOrderDTO(Order order) {
@@ -81,12 +85,12 @@ public class OrderService {
                 order.getRequirement(), order.getEta(), order.getUser().getUserId(),
                 order.getPrice(), order.getStatus());
     }
-/*
+
     // 주문 상세 Entity -> DTO 변환
     private OrderItemDTO convertToOrderItemDTO(OrderItem orderItem) {
         return new OrderItemDTO(orderItem.getOrderItemId(), orderItem.getQuantity(),
                 orderItem.getPrice(), orderItem.getOrder().getOrderId()
                 , orderItem.getProduct().getProductId());
     }
-*/
+
 }
