@@ -53,9 +53,9 @@ public class SecurityConfig {
                 .sessionManagement(AbstractHttpConfigurer::disable) // 세션 비활성화
                 .authorizeHttpRequests(authorize -> authorize
                         // 메인 페이지와 로그인하지 않은 사용자도 접근 가능한 페이지
-                        .requestMatchers("/", "/api").permitAll()
+                        .requestMatchers("*").permitAll()
 
-                        .anyRequest().authenticated()
+                        // .anyRequest().authenticated()
                 )
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS 설정
                 .oauth2Login(oauth2 -> oauth2
