@@ -1,5 +1,6 @@
 package com.dearpet.dearpet.dto;
 
+import com.dearpet.dearpet.entity.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -17,12 +18,12 @@ public class UserDTO {
     private String roleName;
 
     @JsonProperty("oauth")
-    private String oauth;
+    private User.OAuthType oauth;
     private String password;
 
     private Boolean isDeleted;
 
-    public UserDTO(Long id, String username, String nickname, String email, String roleName, String oauth) {
+    public UserDTO(Long id, String username, String nickname, String email, String roleName, User.OAuthType oauth) {
         this.id = id;
         this.username = username;
         this.nickname = nickname;
@@ -31,7 +32,7 @@ public class UserDTO {
         this.oauth = oauth;
     }
 
-    public UserDTO(Long id, String username, String nickname, String email, String roleName, String oauth, String password) {
+    public UserDTO(Long id, String username, String nickname, String email, String roleName, User.OAuthType oauth, String password) {
         this.id = id;
         this.username = username;
         this.nickname = nickname;
