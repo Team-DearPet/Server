@@ -29,11 +29,7 @@ public class OrderItem {
     @JoinColumn(name = "order_id")
     private Order order;            // 주문 상세 : 주문 = N : 1
 
-    /*
-    ProductEntity가 생길때까지 주석처리
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;        // 주문 상세 : 상품 = N : 1
-    */
-     
 }
