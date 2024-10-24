@@ -43,7 +43,8 @@ public class PetService {
         pet.setHealthStatus(petDTO.getHealthStatus());
 
         User user = userRepository.findById(petDTO.getUserId()).
-                orElseThrow(() -> new RuntimeException("User not found"));;
+                orElseThrow(() -> new RuntimeException("User not found"));
+        ;
         pet.setUser(user);
 
         petRepository.save(pet);
@@ -73,7 +74,6 @@ public class PetService {
         Pet updatedPet = petRepository.save(pet);
         return convertToDTO(updatedPet);
     }
-
 
     // 반려동물 삭제
     public void deletePet(Long petId) {
