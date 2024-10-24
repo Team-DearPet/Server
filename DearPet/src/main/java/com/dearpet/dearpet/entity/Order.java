@@ -5,8 +5,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 
+/*
+ * Order Entity
+ * @Author 위지훈
+ * @Since 2024.10.24
+ */
 @Entity
 @Getter
 @Setter
@@ -15,11 +20,11 @@ public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int orderId;            // PK
-    private Date date;              // 주문일
+    private Long orderId;           // PK
+    private LocalDateTime date;     // 주문일
     private String address;         // 수령 주소
     private String requirement;     // 배송 요청사항
-    private Date eta;               // 배송 예정일
+    private LocalDateTime eta;      // 배송 예정일
 
     @Enumerated(EnumType.STRING)
     private Status status;          // 배송 상태
