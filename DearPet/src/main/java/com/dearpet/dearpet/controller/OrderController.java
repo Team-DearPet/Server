@@ -2,6 +2,7 @@ package com.dearpet.dearpet.controller;
 
 import com.dearpet.dearpet.dto.OrderDTO;
 import com.dearpet.dearpet.dto.OrderItemDTO;
+import com.dearpet.dearpet.security.JwtTokenProvider;
 import com.dearpet.dearpet.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,15 +22,18 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    /* 토큰에서 userId를 뽑아와야함
-        // 사용자 주문 내역 조회
-        @GetMapping
-        public ResponseEntity<List<OrderDTO>> getOrderByUserId(){
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
-            List<OrderDTO> oderList = orderService.getOrderByUserId(userId);
-            return ResponseEntity.ok(orderList);
-        }
-    */
+    // 사용자 주문 내역 조회
+    @GetMapping
+    public ResponseEntity<List<OrderDTO>> getOrderByUsername(@RequestHeader("Authorization") String token) {
+        String username = jwtTokenProvider.getUsername(token);
+
+        List<OrderDTO> orderList = orderService.getOrderByUsername(username);
+        return ResponseEntity.ok(orderList);
+    }
+
     // 주문 생성
     @PostMapping
     public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) {
