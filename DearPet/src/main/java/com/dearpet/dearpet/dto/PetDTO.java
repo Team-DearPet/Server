@@ -17,8 +17,8 @@ public class PetDTO {
     private Long petId;                 // PK
     private String name;                // 펫 이름
     private String species;             // 펫 종류
-    private int age;                    // 펫 나이
-    private boolean neutered;           // 펫 중성화 여부
+    private Integer age;                    // 펫 나이
+    private Boolean neutered;           // 펫 중성화 여부
     private Pet.Gender gender;          // 펫 성별
     private BigDecimal weight;          // 펫 몸무게
     private String healthStatus;        // 펫 건강상태
@@ -29,7 +29,7 @@ public class PetDTO {
     }
 
     // 생성자
-    public PetDTO(Long petId, String name, String species, int age, boolean neutered, Pet.Gender gender, BigDecimal weight, String healthStatus, Long userId) {
+    public PetDTO(Long petId, String name, String species, Integer age, Boolean neutered, Pet.Gender gender, BigDecimal weight, String healthStatus, Long userId) {
         this.petId = petId;
         this.name = name;
         this.species = species;
