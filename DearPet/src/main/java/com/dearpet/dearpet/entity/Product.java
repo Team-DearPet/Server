@@ -23,7 +23,7 @@ public class Product {
     private String name;            // 상품명
     private String description;     // 상품 설명
     private String image;           // 상품 이미지
-    private int quantity;           // 상품 수량
+    private Integer quantity;           // 상품 수량
 
     @Column(precision = 10, scale = 2)
     private BigDecimal price;       // 상품 가격

@@ -35,7 +35,16 @@ public class ProductService {
     public ProductDTO createProduct(ProductDTO productDTO) {
         Product product = new Product();
 
-        updateProductFields(product, productDTO);
+        product.setName(productDTO.getName());
+        product.setPrice(productDTO.getPrice());
+        product.setDescription(productDTO.getDescription());
+        product.setImage(productDTO.getImage());
+        product.setQuantity(productDTO.getQuantity());
+        product.setStatus(productDTO.getStatus());
+
+        Category category = categoryRepository.findById(productDTO.getCategoryId())
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+        product.setCategory(category);
 
         productRepository.save(product);
         return convertToProductDTO(product);
@@ -53,7 +62,30 @@ public class ProductService {
         Product product = productRepository.findById(productId).
                 orElseThrow(() -> new RuntimeException("Product not found"));
 
-        updateProductFields(product, productDTO);
+        if (productDTO.getName() != null) {
+            product.setName(productDTO.getName());
+        }
+        if (productDTO.getPrice() != null) {
+            product.setPrice(productDTO.getPrice());
+        }
+        if (productDTO.getDescription() != null) {
+            product.setDescription(productDTO.getDescription());
+        }
+        if (productDTO.getImage() != null) {
+            product.setImage(productDTO.getImage());
+        }
+        if (productDTO.getQuantity() != null) {
+            product.setQuantity(productDTO.getQuantity());
+        }
+        if (productDTO.getStatus() != null) {
+            product.setStatus(productDTO.getStatus());
+        }
+
+        if (productDTO.getCategoryId() != null) {
+            Category category = categoryRepository.findById(productDTO.getCategoryId())
+                    .orElseThrow(() -> new RuntimeException("Category not found"));
+            product.setCategory(category);
+        }
 
         Product updateProduct = productRepository.save(product);
         return convertToProductDTO(updateProduct);
@@ -68,20 +100,6 @@ public class ProductService {
     public List<ProductDTO> getProductByCategoryId(Long categoryId) {
         List<Product> product = productRepository.findByCategoryCategoryId(categoryId);
         return product.stream().map(this::convertToProductDTO).collect(Collectors.toList());
-    }
-
-    // 상품 수정/등록에서 중복되는 부분을 따로 추출 해서 따로 메서드로 만듬
-    private void updateProductFields(Product product, ProductDTO productDTO) {
-        product.setName(productDTO.getName());
-        product.setPrice(productDTO.getPrice());
-        product.setDescription(productDTO.getDescription());
-        product.setImage(productDTO.getImage());
-        product.setQuantity(productDTO.getQuantity());
-        product.setStatus(productDTO.getStatus());
-
-        Category category = categoryRepository.findById(productDTO.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Category not found"));
-        product.setCategory(category);
     }
 
     // 상품 Entity -> DTO 변환

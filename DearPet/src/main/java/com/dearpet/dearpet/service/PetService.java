@@ -41,7 +41,7 @@ public class PetService {
         pet.setSpecies(petDTO.getSpecies());
         pet.setAge(petDTO.getAge());
         pet.setGender(petDTO.getGender());
-        pet.setNeutered(petDTO.isNeutered());
+        pet.setNeutered(petDTO.getNeutered());
         pet.setWeight(petDTO.getWeight());
         pet.setHealthStatus(petDTO.getHealthStatus());
 
@@ -66,13 +66,27 @@ public class PetService {
         Pet pet = petRepository.findById(petId)
                 .orElseThrow(() -> new RuntimeException("Pet not found"));
 
-        pet.setName(petDTO.getName());
-        pet.setSpecies(petDTO.getSpecies());
-        pet.setAge(petDTO.getAge());
-        pet.setNeutered(petDTO.isNeutered());
-        pet.setGender(petDTO.getGender());
-        pet.setWeight(petDTO.getWeight());
-        pet.setHealthStatus(petDTO.getHealthStatus());
+        if (petDTO.getName() != null) {
+            pet.setName(petDTO.getName());
+        }
+        if (petDTO.getSpecies() != null) {
+            pet.setSpecies(petDTO.getSpecies());
+        }
+        if (petDTO.getAge() != null) {
+            pet.setAge(petDTO.getAge());
+        }
+        if (petDTO.getNeutered() != null) {
+            pet.setNeutered(petDTO.getNeutered());
+        }
+        if (petDTO.getGender() != null) {
+            pet.setGender(petDTO.getGender());
+        }
+        if (petDTO.getWeight() != null) {
+            pet.setWeight(petDTO.getWeight());
+        }
+        if (petDTO.getHealthStatus() != null) {
+            pet.setHealthStatus(petDTO.getHealthStatus());
+        }
 
         Pet updatedPet = petRepository.save(pet);
         return convertToDTO(updatedPet);
@@ -86,7 +100,7 @@ public class PetService {
     // pet Entity -> DTO 변환
     private PetDTO convertToDTO(Pet pet) {
         return new PetDTO(pet.getPetId(), pet.getName(), pet.getSpecies(),
-                pet.getAge(), pet.isNeutered(), pet.getGender(),
+                pet.getAge(), pet.getNeutered(), pet.getGender(),
                 pet.getWeight(), pet.getHealthStatus(), pet.getUser().getUserId());
     }
 }
