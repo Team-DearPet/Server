@@ -19,7 +19,7 @@ public class ProductDTO {
     private BigDecimal price;              // 상품 가격
     private String description;            // 상품 상세 설명
     private String image;                  // 상품 이미지
-    private int quantity;                  // 상품 수량
+    private Integer quantity;                  // 상품 수량
     private Product.ProductStatus status;  // 상품 상태
     private Long categoryId;               // 카테고리 Id
 
@@ -28,7 +28,7 @@ public class ProductDTO {
     }
 
     // 생성자
-    public ProductDTO(Long productId, String name, BigDecimal price, String description, String image, int quantity, Product.ProductStatus status, Long categoryId) {
+    public ProductDTO(Long productId, String name, BigDecimal price, String description, String image, Integer quantity, Product.ProductStatus status, Long categoryId) {
         this.productId = productId;
         this.name = name;
         this.price = price;

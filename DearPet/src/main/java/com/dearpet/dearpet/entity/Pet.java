@@ -21,8 +21,8 @@ public class Pet {
     private Long petId;                 // PK
     private String name;                // 펫 이름
     private String species;             // 펫 종류
-    private int age;                    // 펫 나이
-    private boolean neutered = false;   // 펫 중성화 여부
+    private Integer age;                // 펫 나이
+    private Boolean neutered = false;   // 펫 중성화 여부
 
     @Enumerated(EnumType.STRING)
     private Gender gender;              // 펫 성별
