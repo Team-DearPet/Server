@@ -32,8 +32,11 @@ public class OrderService {
     private UserRepository userRepository;
 
     // 사용자 주문 내역 조회
-    public List<OrderDTO> getOrderByUserId(Long userId) {
-        List<Order> order = orderRepository.findByUserUserId(userId);
+    public List<OrderDTO> getOrderByUsername(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        List<Order> order = orderRepository.findByUserUserId(user.getUserId());
         return order.stream().map(this::convertToOrderDTO).collect(Collectors.toList());
     }
 
