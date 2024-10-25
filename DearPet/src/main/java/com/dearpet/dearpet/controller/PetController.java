@@ -1,6 +1,7 @@
 package com.dearpet.dearpet.controller;
 
 import com.dearpet.dearpet.dto.PetDTO;
+import com.dearpet.dearpet.security.JwtTokenProvider;
 import com.dearpet.dearpet.service.PetService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,17 +21,18 @@ public class PetController {
 
     @Autowired
     private PetService petService;
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
-    // 사용자 Id로 사용자가 보유한 반려동물 정보 조회
-    /*@GetMapping
-    public ResponseEntity<List<PetDTO>> getPetsByUserId(HttpServletRequest request){
-        String token = extractToken(request);
-        Long userId = jwUtil.extractUserId(token); // Jspn web token정보에서 userId추출하기
+    // 사용자가 보유한 반려동물 목록 조회
+    @GetMapping
+    public ResponseEntity<List<PetDTO>> getPetsByUsername(@RequestHeader("Authorization") String token){
+        String username = jwtTokenProvider.getUsername(token);
 
-        List<PetDTO> petList = petService.getPetsByUserId(userId);
+        List<PetDTO> petList = petService.getPetsByUsername(username);
         return ResponseEntity.ok(petList);
     }
-*/
+
 
     // 반려동물 등록
     @PostMapping

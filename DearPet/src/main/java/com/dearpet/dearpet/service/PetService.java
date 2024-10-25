@@ -25,9 +25,12 @@ public class PetService {
     @Autowired
     private UserRepository userRepository;
 
-    // 사용자 Id로 반려동물 목록 조회
-    public List<PetDTO> getPetsByUserId(Long userId) {
-        List<Pet> pets = petRepository.findByUserUserId(userId);
+    // 사용자가 보유한 반려동물 목록 조회
+    public List<PetDTO> getPetsByUsername(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        List<Pet> pets = petRepository.findByUserUserId(user.getUserId());
         return pets.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
