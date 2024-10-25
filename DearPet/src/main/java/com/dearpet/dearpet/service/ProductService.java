@@ -51,7 +51,7 @@ public class ProductService {
     // 상품 정보 수정
     public ProductDTO updateProduct(Long productId, ProductDTO productDTO) {
         Product product = productRepository.findById(productId).
-                orElseThrow(() -> new RuntimeException("Pet not found"));
+                orElseThrow(() -> new RuntimeException("Product not found"));
 
         updateProductFields(product, productDTO);
 
