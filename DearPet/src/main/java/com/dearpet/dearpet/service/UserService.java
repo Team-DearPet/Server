@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -80,7 +81,13 @@ public class UserService {
         newUser.setRole(role);
 
         // OAuth 여부 설정
-        newUser.setOauth(userDTO.getOauth());
+        if (userDTO.getOauth() != null) {
+            newUser.setOauth(userDTO.getOauth());  // 소셜 로그인 (KAKAO 또는 GOOGLE)
+        } else {
+            newUser.setOauth(User.OAuthType.NONE);  // 로컬 로그인 사용자는 NONE으로 설정
+        }
+
+        newUser.setCreatedAt(LocalDateTime.now());
 
         // 사용자 저장
         userRepository.save(newUser);
