@@ -27,7 +27,7 @@ public class Order {
     private LocalDateTime eta;      // 배송 예정일
 
     @Enumerated(EnumType.STRING)
-    private Status status;          // 배송 상태
+    private OrderStatus status;     // 배송 상태
 
     @Column(precision = 10, scale = 2)
     private BigDecimal price;       // 총 금액
@@ -36,7 +36,7 @@ public class Order {
     @JoinColumn(name = "user_id")
     private User user;              // 주문 : 사용자 = N : 1
 
-    public enum Status {
+    public enum OrderStatus {
         PENDING, SHIPPED, DELIVERED, CANCELLED
     }
 }
