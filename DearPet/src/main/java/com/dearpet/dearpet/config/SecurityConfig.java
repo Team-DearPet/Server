@@ -52,9 +52,19 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable) // HTTP Basic 인증 비활성화
                 .sessionManagement(AbstractHttpConfigurer::disable) // 세션 비활성화
                 .authorizeHttpRequests(authorize -> authorize
-                                .requestMatchers(HttpMethod.POST, "/api/auth/signup").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-                        .anyRequest().authenticated()
+                        // 모든 사용자에게 허가
+                        .requestMatchers(HttpMethod.POST, "/api/auth/signup").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll() // 상품 조회
+                        .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll() // 카테고리 조회
+
+                        // 인증이 필요한 요청
+                        .requestMatchers("/api/cart/**").authenticated()  // 장바구니 기능
+                        .requestMatchers("/api/orders/**").authenticated()  // 주문 기능
+                        .requestMatchers("/api/pets/**").authenticated()  // 마이펫 관리 기능
+                        .requestMatchers("/api/profile/**").authenticated()  // 마이페이지 기능
+
+                        .anyRequest().authenticated() // 그 외 모든 요청은 인증 필요
                 )
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS 설정
                 .oauth2Login(oauth2 -> oauth2
