@@ -1,0 +1,30 @@
+package com.dearpet.dearpet.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+/*
+ * Address Entity
+ * @Author ghpark
+ * @Since 2024.10.28
+ */
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Table(name = "Addresses")
+public class Address {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user; // 회원 ID와 연관 관계 설정
+
+    private String address; // 실제 배송지 주소
+    private String name;    // 주소지명
+}
