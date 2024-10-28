@@ -10,6 +10,7 @@ import com.dearpet.dearpet.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -116,8 +117,12 @@ public class UserService {
         return new UserDTO(existingUser.getUserId(), existingUser.getUsername(), existingUser.getNickname(), existingUser.getEmail(), existingUser.getRole().getRoleName(), existingUser.getOauth(), existingUser.getPassword());
     }
 
-    // 사용자 삭제
-    public void deleteUser(Long id) {
-        userRepository.deleteById(id);
+    // username을 기준으로 사용자 삭제
+    @Transactional
+    public void deleteUserByUsername(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found: " + username));
+
+        userRepository.delete(user);
     }
 }

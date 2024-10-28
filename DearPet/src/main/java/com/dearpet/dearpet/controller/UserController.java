@@ -1,24 +1,38 @@
 package com.dearpet.dearpet.controller;
 
-import jakarta.servlet.http.HttpServletResponse;
+import com.dearpet.dearpet.service.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.dearpet.dearpet.dto.UserDTO;
+import com.dearpet.dearpet.dto.AddressDTO;
 import com.dearpet.dearpet.dto.LoginRequestDTO;
-import com.dearpet.dearpet.security.JwtTokenProvider;
 import com.dearpet.dearpet.service.UserService;
+import com.dearpet.dearpet.security.JwtTokenProvider;
+
+import java.util.List;
+
+/*
+ * User Controller
+ * @Author ghpark
+ * @Since 2024.10.28
+ */
 
 @RestController
 @RequestMapping("/api")
 @CrossOrigin("*")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+    private final AddressService addressService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+    public UserController(UserService userService, AddressService addressService, JwtTokenProvider jwtTokenProvider) {
+        this.userService = userService;
+        this.addressService = addressService;
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
 
     // 회원가입
     @PostMapping("/auth/signup")
@@ -41,7 +55,7 @@ public class UserController {
         return ResponseEntity.ok("Logged out successfully");
     }
 
-    // 마이페이지 조회
+    // 사용자 정보 조회 (토큰 기반)
     @GetMapping("/profile")
     public ResponseEntity<UserDTO> getUserProfile(@RequestHeader("Authorization") String token) {
         String username = jwtTokenProvider.getUsername(token);
@@ -49,7 +63,7 @@ public class UserController {
         return ResponseEntity.ok(userProfile);
     }
 
-    // 마이페이지 수정
+    // 사용자 정보 수정 (토큰 기반)
     @PatchMapping("/profile")
     public ResponseEntity<UserDTO> updateUserProfile(@RequestHeader("Authorization") String token, @RequestBody UserDTO userDTO) {
         String username = jwtTokenProvider.getUsername(token);
@@ -57,10 +71,43 @@ public class UserController {
         return ResponseEntity.ok(updatedUser);
     }
 
-    // 계정 삭제
-    @DeleteMapping("/{user_id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable("user_id") Long user_id) {
-        userService.deleteUser(user_id);
+    // 회원 탈퇴 (토큰 기반)
+    @DeleteMapping("/profile")
+    public ResponseEntity<Void> deleteUser(@RequestHeader("Authorization") String token) {
+        String username = jwtTokenProvider.getUsername(token);
+        userService.deleteUserByUsername(username);
+        return ResponseEntity.noContent().build();
+    }
+
+    // 사용자 배송지 목록 조회 (토큰 기반)
+    @GetMapping("/profile/addresses")
+    public ResponseEntity<List<AddressDTO>> getUserAddresses(@RequestHeader("Authorization") String token) {
+        String username = jwtTokenProvider.getUsername(token);
+        List<AddressDTO> addresses = addressService.getUserAddresses(username);
+        return ResponseEntity.ok(addresses);
+    }
+
+    // 배송지 추가 (토큰 기반)
+    @PostMapping("/profile/addresses")
+    public ResponseEntity<AddressDTO> addUserAddress(@RequestHeader("Authorization") String token, @RequestBody AddressDTO addressDTO) {
+        String username = jwtTokenProvider.getUsername(token);
+        AddressDTO newAddress = addressService.addUserAddress(username, addressDTO);
+        return ResponseEntity.ok(newAddress);
+    }
+
+    // 배송지 정보 수정 (토큰 기반)
+    @PatchMapping("/profile/addresses/{address_id}")
+    public ResponseEntity<AddressDTO> updateUserAddress(@RequestHeader("Authorization") String token, @PathVariable("address_id") Long addressId, @RequestBody AddressDTO addressDTO) {
+        String username = jwtTokenProvider.getUsername(token);
+        AddressDTO updatedAddress = addressService.updateUserAddress(username, addressId, addressDTO);
+        return ResponseEntity.ok(updatedAddress);
+    }
+
+    // 배송지 삭제 (토큰 기반)
+    @DeleteMapping("/profile/addresses/{address_id}")
+    public ResponseEntity<Void> deleteUserAddress(@RequestHeader("Authorization") String token, @PathVariable("address_id") Long addressId) {
+        String username = jwtTokenProvider.getUsername(token);
+        addressService.deleteUserAddress(username, addressId);
         return ResponseEntity.noContent().build();
     }
 }
