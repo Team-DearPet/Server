@@ -21,17 +21,17 @@ public class CartController {
     }
 
     @GetMapping
-    public CartDTO getCurrentUserCart(@RequestParam Long userId) {
+    public CartDTO getCurrentUserCart(@RequestParam("user_id") Long userId) {
         return cartService.getCartByUserId(userId);
     }
 
     @PostMapping("/items")
-    public CartDTO addItemToCart(@RequestParam Long userId, @RequestParam Long productId, @RequestParam int quantity) {
+    public CartDTO addItemToCart(@RequestParam("user_id") Long userId, @RequestParam("product_id") Long productId, @RequestParam("quantity") int quantity) {
         return cartService.addItemToCart(userId, productId, quantity);
     }
 
     @PatchMapping("/items/{cart_item_id}")
-    public CartDTO updateCartItem(@PathVariable("cart_item_id") Long cartItemId, @RequestParam int quantity) {
+    public CartDTO updateCartItem(@PathVariable("cart_item_id") Long cartItemId, @RequestParam("quantity") int quantity) {
         return cartService.updateCartItem(cartItemId, quantity);
     }
 
@@ -41,7 +41,7 @@ public class CartController {
     }
 
     @PostMapping("/checkout")
-    public void checkout(@RequestParam Long userId) {
+    public void checkout(@RequestParam("user_id") Long userId) {
         cartService.checkout(userId);
     }
 }
