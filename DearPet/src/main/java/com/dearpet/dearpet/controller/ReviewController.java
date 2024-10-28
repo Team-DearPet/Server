@@ -22,7 +22,7 @@ public class ReviewController {
 
     // 상품 리뷰 목록 조회
     @GetMapping
-    public List<ReviewDTO> getAllReviewsByProductId(@RequestParam Long productId) {
+    public List<ReviewDTO> getAllReviewsByProductId(@RequestParam("product_id") Long productId) {
         return reviewService.getReviewsByProductId(productId);
     }
 
