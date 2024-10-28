@@ -108,12 +108,14 @@ public class CartService {
             throw new RuntimeException("Cart is empty");
         }
 
+        /*
         // 결제 처리 로직 (예시로 승인 번호 생성)
         Payments payment = new Payments();
         payment.setUser(cart.getUser());
-        payment.setOrderId(/* 주문 생성 로직 추가 필요 */);
+        payment.setOrderId(// 주문 생성 로직 추가 필요 );
         payment.setDate(new java.sql.Date(System.currentTimeMillis()));
-        payment.setApprovalNum(/* 승인 번호 생성 로직 */);
+        payment.setApprovalNum(// 승인 번호 생성 로직 );
+        */
 
         // 결제가 성공했다면 장바구니 비우기
         cart.getCartItems().clear();
