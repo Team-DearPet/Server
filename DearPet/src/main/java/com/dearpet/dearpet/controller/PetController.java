@@ -37,8 +37,10 @@ public class PetController {
 
     // 반려동물 등록
     @PostMapping
-    public ResponseEntity<PetDTO> createPet(@RequestBody PetDTO petDTO){
-        PetDTO createdPet = petService.createPet(petDTO);
+    public ResponseEntity<PetDTO> createPet(@RequestHeader("Authorization") String token, @RequestBody PetDTO petDTO){
+        String username = jwtTokenProvider.getUsername(token);
+
+        PetDTO createdPet = petService.createPet(petDTO, username);
         return ResponseEntity.ok(createdPet);
     }
 
