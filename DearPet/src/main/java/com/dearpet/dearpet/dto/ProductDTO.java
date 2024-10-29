@@ -22,13 +22,15 @@ public class ProductDTO {
     private Integer quantity;                  // 상품 수량
     private Product.ProductStatus status;  // 상품 상태
     private Long categoryId;               // 카테고리 Id
+    private BigDecimal discount = BigDecimal.ZERO; // 할인율 (기본값 0)
+    private String seller;                 // 상품 등록 업체명 (null 가능)
 
     // 기본 생성자
     public ProductDTO() {
     }
 
     // 생성자
-    public ProductDTO(Long productId, String name, BigDecimal price, String description, String image, Integer quantity, Product.ProductStatus status, Long categoryId) {
+    public ProductDTO(Long productId, String name, BigDecimal price, String description, String image, Integer quantity, Product.ProductStatus status, Long categoryId, BigDecimal discount, String seller) {
         this.productId = productId;
         this.name = name;
         this.price = price;
@@ -37,5 +39,7 @@ public class ProductDTO {
         this.quantity = quantity;
         this.status = status;
         this.categoryId = categoryId;
+        this.discount = discount;
+        this.seller = seller;
     }
 }
