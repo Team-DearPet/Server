@@ -51,13 +51,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private User saveOrUpdate(OAuthAttributes attributes) {
         Optional<Role> defaultRole = roleRepository.findByRoleName("member");
+        User.OAuthType oauthType = attributes.getNameAttributeKey().equals("sub") ? User.OAuthType.GOOGLE : User.OAuthType.KAKAO;
 
         // Log to verify which attributes are being processed
         System.out.println("Processing user: " + attributes.getName());
 
         User user = userRepository.findByUsername(attributes.getName())
                 .map(entity -> entity.update(attributes.getName(), attributes.getName(), attributes.getEmail()))
-                .orElse(attributes.toEntity(defaultRole));
+                .orElse(attributes.toEntity(defaultRole, oauthType));
 
         if (user.getPassword() == null) {
             user.setPassword("oauth2user");
