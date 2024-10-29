@@ -113,7 +113,7 @@ public class CartService {
 
         // 결제 성공 후 장바구니 상태를 CHECKOUT으로 변경
         cart.setStatus(Cart.CartStatus.CHECKOUT);
-        cart.setTotalPrice(BigDecimal.ZERO); // 총 금액 초기화
+        cart.setPrice(BigDecimal.ZERO); // 총 금액 초기화
         cart.getCartItems().clear(); // 장바구니 아이템 비우기
 
         cartRepository.save(cart);
@@ -123,7 +123,7 @@ public class CartService {
     private CartDTO convertToDto(Cart cart) {
         CartDTO cartDTO = new CartDTO();
         cartDTO.setCartId(cart.getCartId());
-        cartDTO.setTotalPrice(cart.getTotalPrice());
+        cartDTO.setTotalPrice(cart.getPrice());
 
         // CartItem을 CartItemDTO로 변환하여 CartDTO에 추가
         cartDTO.setItems(cart.getCartItems().stream().map(cartItem -> {
@@ -144,7 +144,7 @@ public class CartService {
         BigDecimal totalPrice = cart.getCartItems().stream()
                 .map(CartItem::getPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-        cart.setTotalPrice(totalPrice);
+        cart.setPrice(totalPrice);
         cartRepository.save(cart);
     }
 }
