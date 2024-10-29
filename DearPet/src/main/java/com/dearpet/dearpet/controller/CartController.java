@@ -21,27 +21,27 @@ public class CartController {
     }
 
     @GetMapping
-    public CartDTO getCurrentUserCart(@RequestParam("user_id") Long userId) {
+    public CartDTO getCurrentUserCart(@RequestParam("userId") Long userId) {
         return cartService.getCartByUserId(userId);
     }
 
     @PostMapping("/items")
-    public CartDTO addItemToCart(@RequestParam("user_id") Long userId, @RequestParam("product_id") Long productId, @RequestParam("quantity") int quantity) {
+    public CartDTO addItemToCart(@RequestParam("userId") Long userId, @RequestParam("productId") Long productId, @RequestParam("quantity") int quantity) {
         return cartService.addItemToCart(userId, productId, quantity);
     }
 
-    @PatchMapping("/items/{cart_item_id}")
-    public CartDTO updateCartItem(@PathVariable("cart_item_id") Long cartItemId, @RequestParam("quantity") int quantity) {
+    @PatchMapping("/items/{cartItemId}")
+    public CartDTO updateCartItem(@PathVariable("cartItemId") Long cartItemId, @RequestParam("quantity") int quantity) {
         return cartService.updateCartItem(cartItemId, quantity);
     }
 
-    @DeleteMapping("/items/{cart_item_id}")
-    public void deleteCartItem(@PathVariable("cart_item_id") Long cartItemId) {
+    @DeleteMapping("/items/{cartItemId}")
+    public void deleteCartItem(@PathVariable("cartItemId") Long cartItemId) {
         cartService.deleteCartItem(cartItemId);
     }
 
     @PostMapping("/checkout")
-    public void checkout(@RequestParam("user_id") Long userId) {
+    public void checkout(@RequestParam("userId") Long userId) {
         cartService.checkout(userId);
     }
 }
