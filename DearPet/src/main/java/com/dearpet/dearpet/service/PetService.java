@@ -1,6 +1,7 @@
 package com.dearpet.dearpet.service;
 
 import com.dearpet.dearpet.dto.PetDTO;
+import com.dearpet.dearpet.dto.UserDTO;
 import com.dearpet.dearpet.entity.Pet;
 import com.dearpet.dearpet.entity.User;
 import com.dearpet.dearpet.repository.PetRepository;
@@ -35,7 +36,7 @@ public class PetService {
     }
 
     // 반려동물 등록
-    public PetDTO createPet(PetDTO petDTO) {
+    public PetDTO createPet(PetDTO petDTO, String username) {
         Pet pet = new Pet();
         pet.setName(petDTO.getName());
         pet.setSpecies(petDTO.getSpecies());
@@ -45,9 +46,9 @@ public class PetService {
         pet.setWeight(petDTO.getWeight());
         pet.setHealthStatus(petDTO.getHealthStatus());
 
-        User user = userRepository.findById(petDTO.getUserId()).
-                orElseThrow(() -> new RuntimeException("User not found"));
-        ;
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
         pet.setUser(user);
 
         petRepository.save(pet);
