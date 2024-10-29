@@ -29,4 +29,11 @@ public class Cart {
     private List<CartItem> cartItems;
 
     private BigDecimal totalPrice;
+
+    @Enumerated(EnumType.STRING)
+    private CartStatus status = CartStatus.OPEN;
+
+    public enum CartStatus {
+        OPEN, CHECKOUT
+    }
 }
