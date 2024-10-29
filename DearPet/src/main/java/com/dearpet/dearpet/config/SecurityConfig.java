@@ -55,6 +55,7 @@ public class SecurityConfig {
                         // 모든 사용자에게 허가
                         .requestMatchers(HttpMethod.POST, "/api/auth/signup").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/auth/check-username").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll() // 상품 조회
                         .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll() // 카테고리 조회
                         .requestMatchers(HttpMethod.GET, "/api/reviews/**").permitAll() // 리뷰 조회
