@@ -37,28 +37,30 @@ public class PetController {
 
     // 반려동물 등록
     @PostMapping
-    public ResponseEntity<PetDTO> createPet(@RequestBody PetDTO petDTO){
-        PetDTO createdPet = petService.createPet(petDTO);
+    public ResponseEntity<PetDTO> createPet(@RequestHeader("Authorization") String token, @RequestBody PetDTO petDTO){
+        String username = jwtTokenProvider.getUsername(token);
+
+        PetDTO createdPet = petService.createPet(petDTO, username);
         return ResponseEntity.ok(createdPet);
     }
 
     // 특정 반려동물 정보 조회
     @GetMapping("/{petId}")
-    public ResponseEntity<PetDTO> getPet(@PathVariable Long petId){
+    public ResponseEntity<PetDTO> getPet(@PathVariable("petId") Long petId){
         PetDTO petDto = petService.getPetById(petId);
         return ResponseEntity.ok(petDto);
     }
 
     // 특정 반려동물 정보 수정
     @PatchMapping("/{petId}")
-    public ResponseEntity<PetDTO> updatePet(@PathVariable Long petId, @RequestBody PetDTO petDTO){
+    public ResponseEntity<PetDTO> updatePet(@PathVariable("petId") Long petId, @RequestBody PetDTO petDTO){
         PetDTO petDto = petService.updatePet(petId, petDTO);
         return ResponseEntity.ok(petDto);
     }
 
     // 반려동물 삭제
     @DeleteMapping("/{petId}")
-    public ResponseEntity<Void> deletePet(@PathVariable Long petId){
+    public ResponseEntity<Void> deletePet(@PathVariable("petId") Long petId){
         petService.deletePet(petId);
         return ResponseEntity.noContent().build();
     }

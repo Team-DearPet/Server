@@ -5,6 +5,7 @@ import lombok.Getter;
 import com.dearpet.dearpet.entity.Role;
 import com.dearpet.dearpet.entity.User;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
 
@@ -68,12 +69,14 @@ public class OAuthAttributes {
     }
 
     // User 엔티티로 변환
-    public User toEntity(Optional<Role> role) {
+    public User toEntity(Optional<Role> role, User.OAuthType oauthType) {
         return User.builder()
                 .username(name)
                 .nickname(name)
                 .email(email)
+                .oauth(oauthType) // OAuth 타입을 설정
                 .role(role.orElse(null))
+                .createdAt(LocalDateTime.now())
                 .build();
     }
 }
