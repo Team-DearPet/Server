@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /*
  * Pet Controller
@@ -33,7 +34,6 @@ public class PetController {
         List<PetDTO> petList = petService.getPetsByUsername(username);
         return ResponseEntity.ok(petList);
     }
-
 
     // 반려동물 등록
     @PostMapping
@@ -61,5 +61,13 @@ public class PetController {
     public ResponseEntity<Void> deletePet(@PathVariable Long petId){
         petService.deletePet(petId);
         return ResponseEntity.noContent().build();
+    }
+
+    // 사용자의 반려동물 상태 정보를 바탕으로 ChatGPT 분석 요청
+    @GetMapping("/advice")
+    public ResponseEntity<String> getHealthAdvice(@RequestHeader("Authorization") String token) {
+        String username = jwtTokenProvider.getUsername(token);
+        String advice = petService.getHealthAdvice(username);
+        return ResponseEntity.ok(advice);
     }
 }
