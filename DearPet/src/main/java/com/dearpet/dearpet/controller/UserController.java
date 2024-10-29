@@ -96,16 +96,16 @@ public class UserController {
     }
 
     // 배송지 정보 수정 (토큰 기반)
-    @PatchMapping("/profile/addresses/{address_id}")
-    public ResponseEntity<AddressDTO> updateUserAddress(@RequestHeader("Authorization") String token, @PathVariable("address_id") Long addressId, @RequestBody AddressDTO addressDTO) {
+    @PatchMapping("/profile/addresses/{addressId}")
+    public ResponseEntity<AddressDTO> updateUserAddress(@RequestHeader("Authorization") String token, @PathVariable("addressId") Long addressId, @RequestBody AddressDTO addressDTO) {
         String username = jwtTokenProvider.getUsername(token);
         AddressDTO updatedAddress = addressService.updateUserAddress(username, addressId, addressDTO);
         return ResponseEntity.ok(updatedAddress);
     }
 
     // 배송지 삭제 (토큰 기반)
-    @DeleteMapping("/profile/addresses/{address_id}")
-    public ResponseEntity<Void> deleteUserAddress(@RequestHeader("Authorization") String token, @PathVariable("address_id") Long addressId) {
+    @DeleteMapping("/profile/addresses/{addressId}")
+    public ResponseEntity<Void> deleteUserAddress(@RequestHeader("Authorization") String token, @PathVariable("addressId") Long addressId) {
         String username = jwtTokenProvider.getUsername(token);
         addressService.deleteUserAddress(username, addressId);
         return ResponseEntity.noContent().build();
