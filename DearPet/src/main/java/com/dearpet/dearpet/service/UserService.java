@@ -2,8 +2,10 @@ package com.dearpet.dearpet.service;
 
 import com.dearpet.dearpet.dto.LoginRequestDTO;
 import com.dearpet.dearpet.dto.UserDTO;
+import com.dearpet.dearpet.entity.Cart;
 import com.dearpet.dearpet.entity.Role;
 import com.dearpet.dearpet.entity.User;
+import com.dearpet.dearpet.repository.CartRepository;
 import com.dearpet.dearpet.repository.UserRepository;
 import com.dearpet.dearpet.repository.RoleRepository;
 import com.dearpet.dearpet.security.JwtTokenProvider;
@@ -12,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -20,13 +23,15 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final CartRepository cartRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, CartRepository cartRepository, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.cartRepository = cartRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
     }
@@ -91,7 +96,16 @@ public class UserService {
         newUser.setCreatedAt(LocalDateTime.now());
 
         // 사용자 저장
-        userRepository.save(newUser);
+        User savedUser = userRepository.save(newUser);
+
+
+        // 새로운 사용자의 기본 장바구니 생성
+        Cart newCart = new Cart();
+        newCart.setUser(savedUser); // 저장된 사용자와 장바구니 연결
+        newCart.setTotalPrice(BigDecimal.ZERO); // 초기 장바구니 금액
+        newCart.setStatus(Cart.CartStatus.OPEN); // 초기 장바구니 상태 설정 (기본값 OPEN)
+
+        cartRepository.save(newCart); // 장바구니 저장
 
         return new UserDTO(newUser.getUserId(), newUser.getUsername(), newUser.getNickname(), newUser.getEmail(), newUser.getRole().getRoleName(), newUser.getOauth(), newUser.getPassword());
     }
