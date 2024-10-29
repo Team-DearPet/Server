@@ -35,6 +35,12 @@ public class Product {
     @JoinColumn(name = "category_id")
     private Category category;      // 상품 : 카테고리 = N : 1
 
+    @Column(precision = 10, scale = 2, nullable = false, columnDefinition = "DECIMAL(10, 2) DEFAULT 0.00")
+    private BigDecimal discount = BigDecimal.ZERO; // 할인율 (기본값 0)
+
+    @Column(length = 50)
+    private String seller;          // 상품 등록 업체명 (null 가능)
+
     public enum ProductStatus {
         AVAILABLE, SOLD_OUT, DISCONTINUED
     }

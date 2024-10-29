@@ -8,14 +8,10 @@ import com.dearpet.dearpet.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/*
- * product Service
- * @Author 위지훈
- * @Since 2024.10.25
- */
 @Service
 public class ProductService {
 
@@ -41,6 +37,8 @@ public class ProductService {
         product.setImage(productDTO.getImage());
         product.setQuantity(productDTO.getQuantity());
         product.setStatus(productDTO.getStatus());
+        product.setDiscount(productDTO.getDiscount() != null ? productDTO.getDiscount() : BigDecimal.ZERO); // 할인율 설정
+        product.setSeller(productDTO.getSeller()); // 판매자 정보 설정
 
         Category category = categoryRepository.findById(productDTO.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("Category not found"));
@@ -80,6 +78,12 @@ public class ProductService {
         if (productDTO.getStatus() != null) {
             product.setStatus(productDTO.getStatus());
         }
+        if (productDTO.getDiscount() != null) {
+            product.setDiscount(productDTO.getDiscount());
+        }
+        if (productDTO.getSeller() != null) {
+            product.setSeller(productDTO.getSeller());
+        }
 
         if (productDTO.getCategoryId() != null) {
             Category category = categoryRepository.findById(productDTO.getCategoryId())
@@ -106,7 +110,7 @@ public class ProductService {
     private ProductDTO convertToProductDTO(Product product) {
         return new ProductDTO(product.getProductId(), product.getName(),
                 product.getPrice(), product.getDescription(), product.getImage(),
-                product.getQuantity(), product.getStatus(), product.getCategory().getCategoryId());
-
+                product.getQuantity(), product.getStatus(), product.getCategory().getCategoryId(),
+                product.getDiscount(), product.getSeller());
     }
 }
