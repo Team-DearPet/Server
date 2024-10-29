@@ -37,28 +37,28 @@ public class ProductController {
 
     // 상품 상세 정보 조회
     @GetMapping("/{productId}")
-    public ResponseEntity<ProductDTO> getProduct(@PathVariable("product_id") Long productId) {
+    public ResponseEntity<ProductDTO> getProduct(@PathVariable("productId") Long productId) {
         ProductDTO productDTO = productService.getProductDTO(productId);
         return ResponseEntity.ok(productDTO);
     }
 
     // 상품 정보 수정
     @PatchMapping("/{productId}")
-    public ResponseEntity<ProductDTO> updateProduct(@PathVariable("product_id") Long productId, @RequestBody ProductDTO productDTO) {
+    public ResponseEntity<ProductDTO> updateProduct(@PathVariable("productId") Long productId, @RequestBody ProductDTO productDTO) {
         ProductDTO updatedProduct = productService.updateProduct(productId, productDTO);
         return ResponseEntity.ok(updatedProduct);
     }
 
     // 상품 삭제
     @DeleteMapping("/{productId}")
-    public ResponseEntity<ProductDTO> deleteProduct(@PathVariable("product_id") Long productId) {
+    public ResponseEntity<ProductDTO> deleteProduct(@PathVariable("productId") Long productId) {
         productService.deleteProduct(productId);
         return ResponseEntity.noContent().build();
     }
 
     // 특정 카테고리의 상품 조회
     @GetMapping("/categories/{categoryId}")
-    public ResponseEntity<List<ProductDTO>> getProductsByCategory(@PathVariable("category_id") Long categoryId) {
+    public ResponseEntity<List<ProductDTO>> getProductsByCategory(@PathVariable("categoryId") Long categoryId) {
         List<ProductDTO> productList = productService.getProductByCategoryId(categoryId);
         return ResponseEntity.ok(productList);
     }
