@@ -44,21 +44,21 @@ public class OrderController {
 
     // 주문 정보 상세 조회
     @GetMapping("/{orderId}")
-    public ResponseEntity<OrderDTO> getOrderById(@PathVariable Long orderId) {
+    public ResponseEntity<OrderDTO> getOrderById(@PathVariable("orderId") Long orderId) {
         OrderDTO orderDTO = orderService.getOrderByOrderId(orderId);
         return ResponseEntity.ok(orderDTO);
     }
 
     // 주문 취소
     @PatchMapping("/{orderId}")
-    public ResponseEntity<OrderDTO> cancelOrder(@PathVariable Long orderId) {
+    public ResponseEntity<OrderDTO> cancelOrder(@PathVariable("orderId") Long orderId) {
         OrderDTO cancelledOrder = orderService.cancelOrder(orderId);
         return ResponseEntity.ok(cancelledOrder);
     }
 
     // 주문한 상품 목록 조회
     @GetMapping("/{orderId}/items")
-    public ResponseEntity<List<OrderItemDTO>> getOrderItems(@PathVariable Long orderId) {
+    public ResponseEntity<List<OrderItemDTO>> getOrderItems(@PathVariable("orderId") Long orderId) {
         List<OrderItemDTO> orderItemList = orderService.getOrderItemByOrderId(orderId);
         return ResponseEntity.ok(orderItemList);
     }

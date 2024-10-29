@@ -3,6 +3,8 @@ package com.dearpet.dearpet.repository;
 import com.dearpet.dearpet.entity.Cart;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 /*
  * Cart Repository
  * @Author ghpark
@@ -10,4 +12,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface CartRepository extends JpaRepository<Cart, Long> {
     Cart findByUserUserId(Long userId);
+    Optional<Cart> findByUserUserIdAndStatus(Long userId, Cart.CartStatus status);
 }
