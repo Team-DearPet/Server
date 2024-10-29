@@ -2,8 +2,10 @@ package com.dearpet.dearpet.dto;
 
 import java.math.BigDecimal;
 import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
+import com.dearpet.dearpet.entity.Cart.CartStatus;
 
 /*
  * Cart DTO
@@ -16,6 +18,5 @@ public class CartDTO {
     private Long cartId;
     private List<CartItemDTO> items;
     private BigDecimal totalPrice;
-
-    // Getters and Setters
+    private CartStatus status;
 }
