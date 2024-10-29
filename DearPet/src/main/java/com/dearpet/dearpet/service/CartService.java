@@ -30,9 +30,10 @@ public class CartService {
         this.productRepository = productRepository;
     }
 
-    // 특정 사용자 ID에 해당하는 장바구니를 조회하여 CartDTO로 변환하여 반환
+    // 특정 사용자 ID에 해당하는 OPEN 상태의 장바구니 조회
     public CartDTO getCartByUserId(Long userId) {
-        Cart cart = cartRepository.findByUserUserId(userId);
+        Cart cart = cartRepository.findByUserUserIdAndStatus(userId, Cart.CartStatus.OPEN)
+                .orElseThrow(() -> new RuntimeException("No open cart found for user"));
         return convertToDto(cart);
     }
 
@@ -100,26 +101,21 @@ public class CartService {
     }
 
     // 장바구니 결제(체크아웃) 로직 처리
+    // 결제 완료 시 장바구니 상태를 CHECKOUT으로 변경
     @Transactional
     public void checkout(Long userId) {
-        Cart cart = cartRepository.findByUserUserId(userId);
+        Cart cart = cartRepository.findByUserUserIdAndStatus(userId, Cart.CartStatus.OPEN)
+                .orElseThrow(() -> new RuntimeException("No open cart found for user"));
 
         if (cart.getCartItems().isEmpty()) {
             throw new RuntimeException("Cart is empty");
         }
 
-        /*
-        // 결제 처리 로직 (예시로 승인 번호 생성)
-        Payments payment = new Payments();
-        payment.setUser(cart.getUser());
-        payment.setOrderId(// 주문 생성 로직 추가 필요 );
-        payment.setDate(new java.sql.Date(System.currentTimeMillis()));
-        payment.setApprovalNum(// 승인 번호 생성 로직 );
-        */
+        // 결제 성공 후 장바구니 상태를 CHECKOUT으로 변경
+        cart.setStatus(Cart.CartStatus.CHECKOUT);
+        cart.setTotalPrice(BigDecimal.ZERO); // 총 금액 초기화
+        cart.getCartItems().clear(); // 장바구니 아이템 비우기
 
-        // 결제가 성공했다면 장바구니 비우기
-        cart.getCartItems().clear();
-        cart.setTotalPrice(BigDecimal.ZERO);
         cartRepository.save(cart);
     }
 
