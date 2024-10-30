@@ -1,21 +1,15 @@
 package com.dearpet.dearpet.service;
 
 import com.dearpet.dearpet.dto.AddressDTO;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import com.dearpet.dearpet.entity.Address;
 import com.dearpet.dearpet.entity.User;
 import com.dearpet.dearpet.repository.AddressRepository;
 import com.dearpet.dearpet.repository.UserRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-/*
- * Address Service
- * @Author ghpark
- * @Since 2024.10.28
- */
 
 @Service
 public class AddressService {
@@ -45,7 +39,7 @@ public class AddressService {
         Address address = Address.builder()
                 .user(user)
                 .address(addressDTO.getAddress())
-                .name(addressDTO.getName())
+                .defaultAddress(false)  // 기본값을 false로 설정
                 .build();
 
         Address savedAddress = addressRepository.save(address);
@@ -64,7 +58,18 @@ public class AddressService {
         }
 
         address.setAddress(addressDTO.getAddress());
-        address.setName(addressDTO.getName());
+
+        // 기본 주소지로 설정하려는 경우, 기존 모든 주소지의 defaultAddress를 false로 설정
+        if (Boolean.TRUE.equals(addressDTO.getDefaultAddress())) {
+            addressRepository.findByUser_Username(username)
+                    .forEach(existingAddress -> {
+                        existingAddress.setDefaultAddress(false);
+                        addressRepository.save(existingAddress);
+                    });
+            address.setDefaultAddress(true);  // 현재 주소를 기본 주소지로 설정
+        } else {
+            address.setDefaultAddress(false);
+        }
 
         Address updatedAddress = addressRepository.save(address);
         return convertToDto(updatedAddress);
@@ -87,9 +92,9 @@ public class AddressService {
     // 엔티티를 DTO로 변환
     private AddressDTO convertToDto(Address address) {
         return AddressDTO.builder()
-                .id(address.getId())
+                .addressId(address.getAddressId())
                 .address(address.getAddress())
-                .name(address.getName())
+                .defaultAddress(address.getDefaultAddress())  // 기본 주소지 여부 포함
                 .build();
     }
 }
