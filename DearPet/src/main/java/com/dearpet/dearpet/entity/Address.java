@@ -14,7 +14,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "Addresses")
+@Table(name = "addresses")
 public class Address {
 
     @Id
