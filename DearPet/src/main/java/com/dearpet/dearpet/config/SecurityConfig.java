@@ -1,7 +1,9 @@
 package com.dearpet.dearpet.config;
 
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -67,6 +69,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/profile/**").authenticated()  // 마이페이지 기능
 
                         .anyRequest().authenticated() // 그 외 모든 요청은 인증 필요
+                )
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)) // 인증 실패 시 401 반환
                 )
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS 설정
                 .oauth2Login(oauth2 -> oauth2

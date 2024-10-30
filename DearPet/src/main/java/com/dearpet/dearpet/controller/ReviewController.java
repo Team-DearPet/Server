@@ -11,7 +11,7 @@ import java.util.List;
  * @Since 2024.10.28
  */
 @RestController
-@RequestMapping("/api/reviews")
+@RequestMapping("/api")
 @CrossOrigin("*")
 public class ReviewController {
     private final ReviewService reviewService;
@@ -21,13 +21,13 @@ public class ReviewController {
     }
 
     // 상품 리뷰 목록 조회
-    @GetMapping
+    @GetMapping("/reviews")
     public List<ReviewDTO> getAllReviewsByProductId(@RequestParam("productId") Long productId) {
         return reviewService.getReviewsByProductId(productId);
     }
 
     // 리뷰 상세 정보 조회
-    @GetMapping("/{reviewId}")
+    @GetMapping("/reviews/{reviewId}")
     public ReviewDTO getReview(@PathVariable("reviewId") Long reviewId) {
         return reviewService.getReviewById(reviewId);
     }
@@ -39,13 +39,13 @@ public class ReviewController {
     }
 
     // 리뷰 수정
-    @PatchMapping("/{reviewId}")
+    @PatchMapping("reviews/{reviewId}")
     public ReviewDTO updateReview(@PathVariable("reviewId") Long reviewId, @RequestBody ReviewDTO reviewDTO) {
         return reviewService.updateReview(reviewId, reviewDTO);
     }
 
     // 리뷰 삭제
-    @DeleteMapping("/{reviewId}")
+    @DeleteMapping("reviews/{reviewId}")
     public void deleteReview(@PathVariable("reviewId") Long reviewId) {
         reviewService.deleteReview(reviewId);
     }
