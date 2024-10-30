@@ -36,6 +36,11 @@ public class UserService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    // 아이디 중복 확인 메서드 추가
+    public boolean isUsernameAvailable(String username) {
+        return userRepository.findByUsername(username).isEmpty();
+    }
+
     // 로컬 로그인 처리
     public String login(LoginRequestDTO loginRequest) {
         User user = userRepository.findByUsername(loginRequest.getUsername())
@@ -102,7 +107,7 @@ public class UserService {
         // 새로운 사용자의 기본 장바구니 생성
         Cart newCart = new Cart();
         newCart.setUser(savedUser); // 저장된 사용자와 장바구니 연결
-        newCart.setTotalPrice(BigDecimal.ZERO); // 초기 장바구니 금액
+        newCart.setPrice(BigDecimal.ZERO); // 초기 장바구니 금액
         newCart.setStatus(Cart.CartStatus.OPEN); // 초기 장바구니 상태 설정 (기본값 OPEN)
 
         cartRepository.save(newCart); // 장바구니 저장
