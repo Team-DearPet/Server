@@ -1,7 +1,9 @@
 package com.dearpet.dearpet.service;
 
 import com.dearpet.dearpet.dto.ReviewDTO;
+import com.dearpet.dearpet.entity.Product;
 import com.dearpet.dearpet.entity.Review;
+import com.dearpet.dearpet.entity.User;
 import com.dearpet.dearpet.repository.ProductRepository;
 import com.dearpet.dearpet.repository.ReviewRepository;
 import com.dearpet.dearpet.repository.UserRepository;
@@ -47,18 +49,28 @@ public class ReviewService {
     // 리뷰 작성
     @Transactional
     public ReviewDTO createReview(Long userId, Long productId, ReviewDTO reviewDTO) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        // 새로운 리뷰 객체 생성 및 설정
         Review review = new Review();
-        review.setUser(userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found")));
-        review.setProduct(productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product not found")));
+        review.setUser(user);
+        review.setProduct(product);
         review.setRating(reviewDTO.getRating());
         review.setComment(reviewDTO.getComment());
         review.setImage(reviewDTO.getImage());
         review.setReviewedAt(new Timestamp(System.currentTimeMillis()));
 
+        // 리뷰 저장
         Review savedReview = reviewRepository.save(review);
-        return convertToDto(savedReview);
+
+        // 저장된 리뷰를 DTO로 변환, username 포함
+        ReviewDTO savedReviewDTO = convertToDto(savedReview);
+        savedReviewDTO.setUsername(user.getUsername());  // username 추가 설정
+
+        return savedReviewDTO;
     }
 
     // 리뷰 수정
@@ -92,6 +104,7 @@ public class ReviewService {
         dto.setComment(review.getComment());
         dto.setImage(review.getImage());
         dto.setReviewedAt(review.getReviewedAt());
+        dto.setUsername(review.getUser().getUsername());
         return dto;
     }
 }
