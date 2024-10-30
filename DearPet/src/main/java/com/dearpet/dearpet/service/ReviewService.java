@@ -68,7 +68,7 @@ public class ReviewService {
 
         // 저장된 리뷰를 DTO로 변환, username 포함
         ReviewDTO savedReviewDTO = convertToDto(savedReview);
-        savedReviewDTO.setUsername(user.getUsername());  // username 추가 설정
+        savedReviewDTO.setNickname(user.getNickname());  // nickname 추가 설정
 
         return savedReviewDTO;
     }
@@ -104,7 +104,7 @@ public class ReviewService {
         dto.setComment(review.getComment());
         dto.setImage(review.getImage());
         dto.setReviewedAt(review.getReviewedAt());
-        dto.setUsername(review.getUser().getUsername());
+        dto.setNickname(review.getUser().getNickname());
         return dto;
     }
 }
