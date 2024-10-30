@@ -13,7 +13,8 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class AddressDTO {
-    private Long id;
+    private Long addressId;
     private String address;
     private String name;
+    private Boolean defaultAddress;
 }
