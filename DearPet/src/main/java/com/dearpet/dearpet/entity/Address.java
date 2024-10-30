@@ -19,12 +19,12 @@ public class Address {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long addressId;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user; // 회원 ID와 연관 관계 설정
 
     private String address; // 실제 배송지 주소
-    private String name;    // 주소지명
+    private Boolean defaultAddress; // 기본 배송지 여부
 }
