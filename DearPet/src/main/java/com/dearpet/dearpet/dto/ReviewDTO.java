@@ -18,4 +18,5 @@ public class ReviewDTO {
     private String comment;
     private String image;
     private Timestamp reviewedAt;
+    private String username;
 }
