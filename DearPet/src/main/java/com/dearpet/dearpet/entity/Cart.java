@@ -28,7 +28,7 @@ public class Cart {
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> cartItems;
 
-    private BigDecimal totalPrice;
+    private BigDecimal price;
 
     @Enumerated(EnumType.STRING)
     private CartStatus status = CartStatus.OPEN;

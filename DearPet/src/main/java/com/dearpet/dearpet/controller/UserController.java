@@ -41,6 +41,13 @@ public class UserController {
         return ResponseEntity.ok(createdUser);
     }
 
+    // 아이디 중복 확인 엔드포인트
+    @GetMapping("/auth/check-username")
+    public ResponseEntity<Boolean> checkUsernameAvailability(@RequestParam("username") String username) {
+        boolean isAvailable = userService.isUsernameAvailable(username);
+        return ResponseEntity.ok(isAvailable);
+    }
+
     // 로그인
     @PostMapping("/auth/login")
     public ResponseEntity<String> login(@RequestBody LoginRequestDTO loginRequest) {
