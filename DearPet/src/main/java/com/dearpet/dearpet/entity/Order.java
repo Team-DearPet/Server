@@ -20,7 +20,9 @@ public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_id")
     private Long orderId;           // PK
+
     private LocalDateTime date;     // 주문일
     private String address;         // 수령 주소
     private String requirement;     // 배송 요청사항
