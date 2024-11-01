@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Optional;
 
 @Service
 public class PaymentService {
@@ -115,5 +116,8 @@ public class PaymentService {
         payment.setName(paymentData.optString("name", null));
 
         return payment;
+    }
+    public Optional<Payment> getPaymentByImpUid(String impUid) {
+        return paymentRepository.findById(impUid);
     }
 }
