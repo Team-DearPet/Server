@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 /*
- * PrePayment Repository
+ * Verification Repository
  * @Author 위지훈
  * @Since 2024.10.30
  */
