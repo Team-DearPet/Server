@@ -86,6 +86,17 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    // Refresh Token Endpoint
+    @PostMapping("/auth/refresh-token")
+    public ResponseEntity<String> refreshToken(@RequestHeader("Authorization") String token) {
+        try {
+            String newToken = userService.refreshToken(token);
+            return ResponseEntity.ok(newToken);
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body("Invalid or expired token");
+        }
+    }
+
     // 사용자 배송지 목록 조회 (토큰 기반)
     @GetMapping("/profile/addresses")
     public ResponseEntity<List<AddressDTO>> getUserAddresses(@RequestHeader("Authorization") String token) {

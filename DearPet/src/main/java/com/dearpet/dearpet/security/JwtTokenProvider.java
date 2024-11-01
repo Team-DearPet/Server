@@ -52,6 +52,7 @@ public class JwtTokenProvider {
     // 토큰에서 사용자 이름 추출
     public String getUsername(String token) {
         Claims claims = parseToken(token);
+        System.out.println("Extracted username from token: " + claims.getSubject());
         return claims.getSubject();
     }
 
