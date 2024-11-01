@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/payments")
@@ -24,5 +25,12 @@ public class PaymentController {
         System.out.println("Saved Payment: " + savedPayment);
 
         return ResponseEntity.ok(savedPayment);
+    }
+
+    @GetMapping("/{impUid}")
+    public ResponseEntity<Payment> getPaymentByImpUid(@PathVariable String impUid) {
+        Optional<Payment> payment = paymentService.getPaymentByImpUid(impUid);
+        return payment.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
