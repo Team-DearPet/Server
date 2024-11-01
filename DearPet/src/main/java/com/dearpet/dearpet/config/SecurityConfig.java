@@ -61,6 +61,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll() // 상품 조회
                         .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll() // 카테고리 조회
                         .requestMatchers(HttpMethod.GET, "/api/reviews/**").permitAll() // 리뷰 조회
+                        .requestMatchers(HttpMethod.POST, "/api/payments/save").permitAll() // 결제 정보 저장
 
                         // 인증이 필요한 요청
                         .requestMatchers("/api/cart/**").authenticated()  // 장바구니 기능
