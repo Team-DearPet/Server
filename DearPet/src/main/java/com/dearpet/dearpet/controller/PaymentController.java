@@ -27,8 +27,8 @@ public class PaymentController {
         return ResponseEntity.ok(savedPayment);
     }
 
-    @GetMapping("/{impUid}")
-    public ResponseEntity<Payment> getPaymentByImpUid(@PathVariable String impUid) {
+    @GetMapping("/{imp_uid}")
+    public ResponseEntity<Payment> getPaymentByImpUid(@PathVariable("imp_uid") String impUid) {
         Optional<Payment> payment = paymentService.getPaymentByImpUid(impUid);
         return payment.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
