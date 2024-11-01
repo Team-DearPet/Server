@@ -118,6 +118,6 @@ public class PaymentService {
         return payment;
     }
     public Optional<Payment> getPaymentByImpUid(String impUid) {
-        return paymentRepository.findById(impUid);
+        return paymentRepository.findByImpUid(impUid);
     }
 }
