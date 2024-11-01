@@ -19,7 +19,9 @@ import java.util.Collections;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long userId;        // PK
+
     private String username;    // 회원 실명
     private String nickname;    // 회원 닉네임
     private String password;    // 회원 비밀번호
