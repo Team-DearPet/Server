@@ -14,11 +14,11 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@Table(name = "prepayments")
-public class PrePayment {
+@Table(name = "verification")
+public class Verification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long prepaymentId;
+    private Long verificationId;
 
     @Column(nullable = false, unique = true)
     private String merchantUid;                             // 주문 고유 ID

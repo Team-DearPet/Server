@@ -1,7 +1,7 @@
 package com.dearpet.dearpet.controller;
 
-import com.dearpet.dearpet.dto.PrePaymentDTO;
-import com.dearpet.dearpet.service.PrepaymentService;
+import com.dearpet.dearpet.dto.VerificationDTO;
+import com.dearpet.dearpet.service.VerificationService;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.response.Payment;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,33 +18,31 @@ import java.util.Map;
  * @Since 2024.10.30
  */
 @RestController
-@RequestMapping("/api/prepayment")
+@RequestMapping("/api/verification")
 @CrossOrigin("*")
-public class PrePaymentController {
+public class ValidationController {
 
     @Autowired
-    private PrepaymentService prePaymentService;
+    private VerificationService verificationService;
 
     // 사전 검증
     @PostMapping("/prepare")
-    public ResponseEntity<?> preparePayment(@RequestBody PrePaymentDTO prePaymentDTO) {
+    public ResponseEntity<?> preparePayment(@RequestBody VerificationDTO prePaymentDTO) {
         try {
-            prePaymentService.preparePayment(prePaymentDTO);
-            // JSON 응답으로 status 값을 포함하여 반환
+            verificationService.preparePayment(prePaymentDTO);
             return ResponseEntity.ok().body(Map.of("status", "CONFIRMED"));
         } catch (Exception e) {
-            // 오류가 발생할 경우 적절한 오류 메시지 반환
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
         }
     }
 
     // 사후 검증
-    @PostMapping("/validate")
-    public ResponseEntity<?> validatePayment(@RequestBody Map<String, String> requestData) throws IamportResponseException, IOException {
+    @PostMapping("/confirm")
+    public ResponseEntity<?> confirmPayment(@RequestBody Map<String, String> requestData) throws IamportResponseException, IOException {
         String impUid = requestData.get("impUid");
         String merchantUid = requestData.get("merchantUid");
 
-        Payment paymentInfo = prePaymentService.validatePayment(impUid, merchantUid);
+        Payment paymentInfo = verificationService.confirmPayment(impUid, merchantUid);
         return ResponseEntity.ok().body(paymentInfo);
     }
 
