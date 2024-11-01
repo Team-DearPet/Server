@@ -6,7 +6,7 @@ import lombok.Setter;
 import java.math.BigDecimal;
 
 /*
- * PrePayment DTD
+ * Verification DTD
  * @Author 위지훈
  * @Since 2024.10.30
  */

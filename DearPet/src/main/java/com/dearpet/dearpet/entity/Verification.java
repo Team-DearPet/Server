@@ -7,7 +7,7 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 /*
- * PrePayment
+ * Verification
  * @Author 위지훈
  * @Since 2024.10.30
  */
