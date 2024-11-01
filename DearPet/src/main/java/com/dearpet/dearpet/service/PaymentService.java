@@ -105,6 +105,7 @@ public class PaymentService {
         }
 
         payment.setCashReceiptIssued(paymentData.optBoolean("cash_receipt_issued", false));
+        payment.setCardName(paymentData.optString("card_name", null));
         payment.setCurrency(paymentData.optString("currency", "KRW"));
         payment.setEscrow(paymentData.optBoolean("escrow", false));
         payment.setPayMethod(paymentData.optString("pay_method", null));
