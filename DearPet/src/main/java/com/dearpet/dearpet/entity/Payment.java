@@ -40,6 +40,9 @@ public class Payment {
     @Column(name = "cancel_amount", columnDefinition = "DECIMAL(10, 2) DEFAULT 0")
     private BigDecimal cancelAmount = BigDecimal.ZERO;
 
+    @Column(name = "card_name")
+    private String cardName;
+
     @Column(name = "cancel_history")
     private String cancelHistory;
 
