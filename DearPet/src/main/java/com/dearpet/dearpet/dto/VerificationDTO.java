@@ -12,7 +12,7 @@ import java.math.BigDecimal;
  */
 @Getter
 @Setter
-public class PrePaymentDTO {
+public class VerificationDTO {
     private String merchantUid;         // 주문 고유 ID
     private BigDecimal expectedAmount;  // 예상 결제 금액
 }
