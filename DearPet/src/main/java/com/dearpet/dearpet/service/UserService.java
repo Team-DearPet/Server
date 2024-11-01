@@ -60,6 +60,20 @@ public class UserService {
         // 클라이언트에서 토큰을 삭제하는 방식으로 처리
     }
 
+    // Token refresh method
+    public String refreshToken(String token) {
+        if (jwtTokenProvider.validateToken(token)) {
+            String username = jwtTokenProvider.getUsername(token);
+            User user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            // Create new JWT token
+            return jwtTokenProvider.createToken(user.getUsername(), user.getRole().getRoleName(), user.getUserId());
+        } else {
+            throw new RuntimeException("Invalid or expired token");
+        }
+    }
+
     // 사용자 정보 조회 (username으로 조회)
     public UserDTO getUserByUsername(String username) {
         User user = userRepository.findByUsername(username)
@@ -125,9 +139,15 @@ public class UserService {
         existingUser.setNickname(userDTO.getNickname());
         existingUser.setEmail(userDTO.getEmail());
 
-        // 비밀번호는 null 또는 빈 값이 아닌 경우만 업데이트 (소셜 로그인 사용자는 비밀번호 없이 로그인 가능)
-        if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
-            existingUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        // 비밀번호 업데이트 처리
+        if (userDTO.getCurrentPassword() != null && !userDTO.getCurrentPassword().isEmpty()
+                && userDTO.getNewPassword() != null && !userDTO.getNewPassword().isEmpty()) {
+
+            if (passwordEncoder.matches(userDTO.getCurrentPassword(), existingUser.getPassword())) {
+                existingUser.setPassword(passwordEncoder.encode(userDTO.getNewPassword()));
+            } else {
+                throw new RuntimeException("현재 비밀번호가 올바르지 않습니다.");
+            }
         }
 
         // 사용자 정보 저장

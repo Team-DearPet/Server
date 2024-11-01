@@ -14,6 +14,7 @@ public class UserDTO {
     private String username;
     private String nickname;
     private String email;
+
     @JsonProperty("role_name")
     private String roleName;
 
@@ -22,6 +23,10 @@ public class UserDTO {
     private String password;
 
     private Boolean isDeleted;
+
+    // 비밀번호 변경을 위한 필드 추가
+    private String currentPassword;
+    private String newPassword;
 
     public UserDTO(Long id, String username, String nickname, String email, String roleName, User.OAuthType oauth) {
         this.id = id;
