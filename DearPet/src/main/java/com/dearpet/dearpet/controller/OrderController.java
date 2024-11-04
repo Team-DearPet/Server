@@ -42,7 +42,7 @@ public class OrderController {
         return ResponseEntity.ok(createdOrder);
     }
 
-    // 주문 정보 상세 조회
+    // 주문 정보 단일 조회
     @GetMapping("/{orderId}")
     public ResponseEntity<OrderDTO> getOrderById(@PathVariable("orderId") Long orderId) {
         OrderDTO orderDTO = orderService.getOrderByOrderId(orderId);

@@ -3,6 +3,7 @@ package com.dearpet.dearpet.controller;
 import com.dearpet.dearpet.dto.CartDTO;
 import com.dearpet.dearpet.service.CartService;
 import com.dearpet.dearpet.security.JwtTokenProvider;
+import com.dearpet.dearpet.service.OrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -18,10 +19,12 @@ import java.util.List;
 public class CartController {
     private final CartService cartService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final OrderService orderService;
 
-    public CartController(CartService cartService, JwtTokenProvider jwtTokenProvider) {
+    public CartController(CartService cartService, JwtTokenProvider jwtTokenProvider, OrderService orderService) {
         this.cartService = cartService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.orderService = orderService;
     }
 
     // 현재 사용자의 장바구니 조회
@@ -57,11 +60,14 @@ public class CartController {
         return ResponseEntity.noContent().build();
     }
 
-    // 장바구니 체크아웃
+    // 결제한 상품 주문 생성 및 장바구니에서 제거
     @PostMapping("/checkout")
-    public ResponseEntity<Void> checkout(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<Void> checkout(@RequestHeader("Authorization") String token,
+                                         @RequestParam("impUid") String impUid,
+                                         @RequestParam List<Long> cartItemIds) {
         Long userId = jwtTokenProvider.getUserId(token);
-        cartService.checkout(userId);
+        orderService.createOrderFromPayment(userId, impUid, cartItemIds);
         return ResponseEntity.noContent().build();
     }
+
 }
