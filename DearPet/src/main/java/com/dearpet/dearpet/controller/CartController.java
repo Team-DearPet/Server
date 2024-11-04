@@ -64,7 +64,7 @@ public class CartController {
     @PostMapping("/checkout")
     public ResponseEntity<Void> checkout(@RequestHeader("Authorization") String token,
                                          @RequestParam("impUid") String impUid,
-                                         @RequestParam List<Long> cartItemIds) {
+                                         @RequestParam("cartItemIds") List<Long> cartItemIds) {
         Long userId = jwtTokenProvider.getUserId(token);
         orderService.createOrderFromPayment(userId, impUid, cartItemIds);
         return ResponseEntity.noContent().build();
