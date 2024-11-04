@@ -11,7 +11,9 @@ import com.dearpet.dearpet.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /*
  * Cart Service
@@ -147,4 +149,29 @@ public class CartService {
         cart.setPrice(totalPrice);
         cartRepository.save(cart);
     }
+
+    // 결제된 상품을 CartItems에서 가져오는 메서드
+    public List<CartItem> getCartItemsByIds(Long userId, List<Long> cartItemIds) {
+        Cart cart = cartRepository.findByUserUserIdAndStatus(userId, Cart.CartStatus.OPEN)
+                .orElseThrow(() -> new RuntimeException("Open cart not found for user"));
+        return cart.getCartItems().stream()
+                .filter(item -> cartItemIds.contains(item.getCartItemId()))
+                .collect(Collectors.toList());
+    }
+
+    // 결제된 상품을 CartItems에서 삭제하는 메서드
+    public void removeCartItems(Long userId, List<Long> cartItemIds) {
+        List<CartItem> itemsToRemove = getCartItemsByIds(userId, cartItemIds);
+        cartItemRepository.deleteAll(itemsToRemove);
+
+        // 장바구니 총 금액 업데이트
+        Cart cart = cartRepository.findByUserUserIdAndStatus(userId, Cart.CartStatus.OPEN)
+                .orElseThrow(() -> new RuntimeException("Open cart not found for user"));
+        updateCartTotalPrice(cart);
+
+        cart.getCartItems().removeAll(itemsToRemove);
+        updateCartTotalPrice(cart);
+        cartRepository.save(cart);
+    }
+
 }
