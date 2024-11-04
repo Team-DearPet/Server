@@ -2,12 +2,12 @@ package com.dearpet.dearpet.service;
 
 import com.dearpet.dearpet.dto.OrderDTO;
 import com.dearpet.dearpet.dto.OrderItemDTO;
-import com.dearpet.dearpet.entity.Order;
-import com.dearpet.dearpet.entity.OrderItem;
-import com.dearpet.dearpet.entity.User;
+import com.dearpet.dearpet.entity.*;
 import com.dearpet.dearpet.repository.OrderItemRepository;
 import com.dearpet.dearpet.repository.OrderRepository;
+import com.dearpet.dearpet.repository.PaymentRepository;
 import com.dearpet.dearpet.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +30,10 @@ public class OrderService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private PaymentRepository paymentRepository;
+    @Autowired
+    private CartService cartService;
 
     // 사용자 주문 내역 조회
     public List<OrderDTO> getOrderByUsername(String username) {
@@ -80,6 +84,40 @@ public class OrderService {
     public List<OrderItemDTO> getOrderItemByOrderId(Long orderId) {
         List<OrderItem> orderItems = orderItemRepository.findByOrderOrderId(orderId);
         return orderItems.stream().map(this::convertToOrderItemDTO).collect(Collectors.toList());
+    }
+
+    // 결제 정보를 바탕으로 주문 생성
+    @Transactional
+    public void createOrderFromPayment(Long userId, String impUid, List<Long> cartItemIds) {
+        // Payment 테이블에서 결제 정보 가져오기
+        Payment payment = paymentRepository.findByImpUid(impUid)
+                .orElseThrow(() -> new RuntimeException("Payment not found"));
+
+        // 주문 생성
+        Order order = new Order();
+        order.setUser(payment.getCustomer());  // 결제한 사용자 정보
+        order.setDate(payment.getPaidAt());
+        order.setStatus(Order.OrderStatus.PENDING);
+        order.setAddress(payment.getBuyerAddr());
+        order.setPrice(payment.getAmount());
+        orderRepository.save(order);
+
+        // CartItems에서 선택된 항목만 OrderItems로 이동
+        List<CartItem> selectedCartItems = cartService.getCartItemsByIds(userId, cartItemIds);
+        List<OrderItem> orderItems = selectedCartItems.stream().map(cartItem -> {
+            OrderItem orderItem = new OrderItem();
+            orderItem.setOrder(order);
+            orderItem.setProduct(cartItem.getProduct());
+            orderItem.setQuantity(cartItem.getQuantity());
+            orderItem.setPrice(cartItem.getPrice());
+            return orderItem;
+        }).collect(Collectors.toList());
+
+        orderItemRepository.saveAll(orderItems);
+
+        // 장바구니에서 해당 CartItems 삭제
+        cartService.removeCartItems(userId, cartItemIds);
+
     }
 
     // 주문 Entity -> DTO 변환
