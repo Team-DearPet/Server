@@ -1,6 +1,7 @@
 package com.dearpet.dearpet.controller;
 
 import com.dearpet.dearpet.dto.ReviewDTO;
+import com.dearpet.dearpet.security.JwtTokenProvider;
 import com.dearpet.dearpet.service.ReviewService;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -15,9 +16,11 @@ import java.util.List;
 @CrossOrigin("*")
 public class ReviewController {
     private final ReviewService reviewService;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public ReviewController(ReviewService reviewService) {
+    public ReviewController(ReviewService reviewService, JwtTokenProvider jwtTokenProvider) {
         this.reviewService = reviewService;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     // 상품 리뷰 목록 조회
@@ -34,7 +37,8 @@ public class ReviewController {
 
     // 상품 리뷰 작성
     @PostMapping("/products/{productId}/reviews")
-    public ReviewDTO createReview(@RequestParam Long userId, @PathVariable("productId") Long productId, @RequestBody ReviewDTO reviewDTO) {
+    public ReviewDTO createReview(@RequestHeader("Authorization") String token, @PathVariable("productId") Long productId, @RequestBody ReviewDTO reviewDTO) {
+        Long userId = jwtTokenProvider.getUserId(token); // JWT 토큰에서 userId 추출
         return reviewService.createReview(userId, productId, reviewDTO);
     }
 
