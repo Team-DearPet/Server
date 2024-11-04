@@ -13,14 +13,14 @@ import java.io.IOException;
 import java.util.Map;
 
 /*
- * PrePayment Controller
+ * Verification Controller
  * @Author 위지훈
  * @Since 2024.10.30
  */
 @RestController
 @RequestMapping("/api/verification")
 @CrossOrigin("*")
-public class ValidationController {
+public class VerificationController {
 
     @Autowired
     private VerificationService verificationService;

@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 
 /*
- * Validation Service
+ * Verification Service
  * @Author 위지훈
  * @Since 2024.10.30
  */
