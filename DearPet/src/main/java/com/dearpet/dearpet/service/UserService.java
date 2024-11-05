@@ -16,7 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class UserService {
@@ -26,14 +29,17 @@ public class UserService {
     private final CartRepository cartRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final Map<String, String> verificationCodes = new HashMap<>();
+    private final EmailService emailService;
 
     @Autowired
-    public UserService(UserRepository userRepository, RoleRepository roleRepository, CartRepository cartRepository, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, CartRepository cartRepository, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider, EmailService emailService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.cartRepository = cartRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.emailService = emailService;
     }
 
     // 아이디 중복 확인 메서드 추가
@@ -170,5 +176,26 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found: " + username));
 
         userRepository.delete(user);
+    }
+
+    // 인증번호 발송 메서드
+    public String sendVerificationCode(String email) {
+        String code = generateVerificationCode();
+        verificationCodes.put(email, code);
+        emailService.sendEmail(email, "이메일 인증번호", "인증번호는 " + code + "입니다.");
+        return code;
+    }
+
+    // 인증번호 검증 메서드
+    public boolean verifyCode(String email, String inputCode) {
+        String storedCode = verificationCodes.get(email);
+        return storedCode != null && storedCode.equals(inputCode);
+    }
+
+    // 인증번호 생성
+    private String generateVerificationCode() {
+        Random random = new Random();
+        int code = 100000 + random.nextInt(900000);
+        return String.valueOf(code);
     }
 }
