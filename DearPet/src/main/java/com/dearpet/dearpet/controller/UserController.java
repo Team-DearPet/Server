@@ -55,6 +55,15 @@ public class UserController {
         return ResponseEntity.ok(token);
     }
 
+
+    // 기존 비밀번호 확인 엔드포인트 추가
+    @PostMapping("/auth/verify-password")
+    public ResponseEntity<Boolean> verifyPassword(@RequestHeader("Authorization") String token, @RequestBody String currentPassword) {
+        String username = jwtTokenProvider.getUsername(token);
+        boolean isPasswordValid = userService.verifyCurrentPassword(username, currentPassword);
+        return ResponseEntity.ok(isPasswordValid);
+    }
+
     // 로그아웃
     @GetMapping("/auth/logout")
     public ResponseEntity<String> logout() {

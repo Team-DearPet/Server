@@ -129,6 +129,13 @@ public class UserService {
         return new UserDTO(newUser.getUserId(), newUser.getUsername(), newUser.getNickname(), newUser.getEmail(), newUser.getRole().getRoleName(), newUser.getOauth(), newUser.getPassword());
     }
 
+    // 현재 비밀번호 확인 메서드 추가
+    public boolean verifyCurrentPassword(String username, String currentPassword) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return passwordEncoder.matches(currentPassword, user.getPassword());
+    }
+
     // 사용자 정보 수정 (username 기반으로)
     public UserDTO updateUserByUsername(String username, UserDTO userDTO) {
         User existingUser = userRepository.findByUsername(username)
