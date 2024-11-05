@@ -112,4 +112,12 @@ public class ReviewService {
     public boolean hasUserReviewedProduct(Long userId, Long productId) {
         return reviewRepository.existsByUserUserIdAndProductProductId(userId, productId);
     }
+
+    // 특정 사용자가 작성한 리뷰 조회
+    public List<ReviewDTO> getReviewsByUserId(Long userId) {
+        return reviewRepository.findByUserUserId(userId)
+                .stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
 }

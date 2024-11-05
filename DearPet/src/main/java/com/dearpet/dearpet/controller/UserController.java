@@ -61,8 +61,6 @@ public class UserController {
         return ResponseEntity.ok(token);
     }
 
-<<<<<<< Updated upstream
-=======
     // 이메일 인증번호 발송 엔드포인트
     @PostMapping("/auth/send-verification-code")
     public ResponseEntity<Map<String, String>> sendVerificationCode(@RequestBody VerificationRequestDTO request) {
@@ -92,7 +90,6 @@ public class UserController {
         return ResponseEntity.ok(isPasswordValid);
     }
 
->>>>>>> Stashed changes
     // 로그아웃
     @GetMapping("/auth/logout")
     public ResponseEntity<String> logout() {
