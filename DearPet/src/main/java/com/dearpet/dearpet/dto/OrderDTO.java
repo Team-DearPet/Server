@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /*
  * Order DTO
@@ -24,13 +25,14 @@ public class OrderDTO {
     private Order.OrderStatus status;   // 배송 상태
     private BigDecimal price;           // 총 금액
     private Long userId;                // 사용자 ID
+    private OrderItemDTO productInfo; // 일반 결제용 상품 정보 리스트
 
     // 기본 생성자
     public OrderDTO() {
     }
 
     // 생성자
-    public OrderDTO(Long orderId, LocalDateTime date, String address, String requirement, LocalDateTime eta, Long userId, BigDecimal price, Order.OrderStatus status) {
+    public OrderDTO(Long orderId, LocalDateTime date, String address, String requirement, LocalDateTime eta, Long userId, BigDecimal price, Order.OrderStatus status, OrderItemDTO productInfo) {
         this.orderId = orderId;
         this.date = date;
         this.address = address;
@@ -39,6 +41,7 @@ public class OrderDTO {
         this.userId = userId;
         this.price = price;
         this.status = status;
+        this.productInfo = productInfo;
     }
 
 }

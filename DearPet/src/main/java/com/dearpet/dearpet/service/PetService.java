@@ -122,7 +122,7 @@ public class PetService {
 
         // ChatGPT로 요청 전송
         Map<String, Object> requestBody = Map.of(
-                "model", "gpt-4",
+                "model", "gpt-4-turbo",
                 "messages", List.of(Map.of("role", "user", "content", petStatusSummary))
         );
 

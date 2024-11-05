@@ -63,11 +63,15 @@ public class OrderController {
         return ResponseEntity.ok(orderItemList);
     }
 
-    // 요청사항 및 배송예정일 추가
-    @PatchMapping("/{orderId}/requirement")
-    public ResponseEntity<OrderDTO> addOrderInfo(@PathVariable("orderId") Long orderId, @RequestBody OrderDTO orderDTO) {
-        OrderDTO addOrderInfo = orderService.addOrderInfo(orderId, orderDTO);
-        return ResponseEntity.ok(addOrderInfo);
+    // 결제시 주문 생성
+    @PostMapping("/checkout")
+    public ResponseEntity<Void> checkout(@RequestHeader("Authorization") String token,
+                                         @RequestParam("impUid") String impUid,
+                                         @RequestParam(value = "cartItemIds", required = false) List<Long> cartItemIds,
+                                         @RequestBody OrderDTO orderDTO) {
+        Long userId = jwtTokenProvider.getUserId(token);
+        orderService.createOrderFromPayment(userId, impUid, cartItemIds, orderDTO);
+        return ResponseEntity.noContent().build();
     }
 
 }

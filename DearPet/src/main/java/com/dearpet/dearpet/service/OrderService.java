@@ -3,15 +3,14 @@ package com.dearpet.dearpet.service;
 import com.dearpet.dearpet.dto.OrderDTO;
 import com.dearpet.dearpet.dto.OrderItemDTO;
 import com.dearpet.dearpet.entity.*;
-import com.dearpet.dearpet.repository.OrderItemRepository;
-import com.dearpet.dearpet.repository.OrderRepository;
-import com.dearpet.dearpet.repository.PaymentRepository;
-import com.dearpet.dearpet.repository.UserRepository;
+import com.dearpet.dearpet.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,6 +34,8 @@ public class OrderService {
     private PaymentRepository paymentRepository;
     @Autowired
     private CartService cartService;
+    @Autowired
+    private ProductRepository productRepository;
 
     // 사용자 주문 내역 조회
     public List<OrderDTO> getOrderByUsername(String username) {
@@ -89,7 +90,7 @@ public class OrderService {
 
     // 결제 정보를 바탕으로 주문 생성
     @Transactional
-    public void createOrderFromPayment(Long userId, String impUid, List<Long> cartItemIds) {
+    public void createOrderFromPayment(Long userId, String impUid, List<Long> cartItemIds, OrderDTO orderDTO) {
 
         Payment payment = paymentRepository.findByImpUid(impUid)
                 .orElseThrow(() -> new RuntimeException("Payment not found"));
@@ -104,45 +105,55 @@ public class OrderService {
         order.setStatus(Order.OrderStatus.PENDING);
         order.setAddress(payment.getBuyerAddr());
         order.setPrice(payment.getAmount());
+        order.setRequirement(orderDTO.getRequirement());
+        order.setEta(order.getDate().plusDays(3));
+
         orderRepository.save(order);
 
-        // CartItems에서 선택된 항목만 OrderItems로 이동
-        List<CartItem> selectedCartItems = cartService.getCartItemsByIds(userId, cartItemIds);
-        List<OrderItem> orderItems = selectedCartItems.stream().map(cartItem -> {
+
+        List<OrderItem> orderItems;
+
+        // 카트결제
+        if (cartItemIds != null && !cartItemIds.isEmpty()) {
+
+            List<CartItem> selectedCartItems = cartService.getCartItemsByIds(userId, cartItemIds);
+            orderItems = selectedCartItems.stream().map(cartItem -> {
+                OrderItem orderItem = new OrderItem();
+                orderItem.setOrder(order);
+                orderItem.setProduct(cartItem.getProduct());
+                orderItem.setQuantity(cartItem.getQuantity());
+                orderItem.setPrice(cartItem.getPrice());
+                return orderItem;
+            }).collect(Collectors.toList());
+
+            cartService.removeCartItems(userId, cartItemIds);
+        }
+        // 일반 결제
+        else {
+            OrderItemDTO productInfo = orderDTO.getProductInfo();
+            Product product = productRepository.findById(productInfo.getProductId())
+                    .orElseThrow(() -> new RuntimeException("Product not found"));
+
             OrderItem orderItem = new OrderItem();
             orderItem.setOrder(order);
-            orderItem.setProduct(cartItem.getProduct());
-            orderItem.setQuantity(cartItem.getQuantity());
-            orderItem.setPrice(cartItem.getPrice());
-            return orderItem;
-        }).collect(Collectors.toList());
+            orderItem.setProduct(product);
+            orderItem.setQuantity(productInfo.getQuantity());
+            orderItem.setPrice(product.getPrice().multiply(BigDecimal.valueOf(productInfo.getQuantity())));
+
+            orderItems = List.of(orderItem);
+        }
 
         orderItemRepository.saveAll(orderItems);
-
-        // 장바구니에서 해당 CartItems 삭제
-        cartService.removeCartItems(userId, cartItemIds);
-
-    }
-
-    // 요구사항및 배송 예정일 추가
-    public OrderDTO addOrderInfo(Long orderId, OrderDTO orderDTO) {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("order not found"));
-
-        order.setRequirement(orderDTO.getRequirement());
-
-        LocalDateTime eta = order.getDate().plusDays(3);
-        order.setEta(eta);
-
-        orderRepository.save(order);
-        return convertToOrderDTO(order);
     }
 
     // 주문 Entity -> DTO 변환
     private OrderDTO convertToOrderDTO(Order order) {
+        OrderItemDTO productInfo = (order.getOrderItems() != null && !order.getOrderItems().isEmpty()) ?
+                convertToOrderItemDTO(order.getOrderItems().get(0)) : null;
+
         return new OrderDTO(order.getOrderId(), order.getDate(), order.getAddress(),
                 order.getRequirement(), order.getEta(), order.getUser().getUserId(),
-                order.getPrice(), order.getStatus());
+                order.getPrice(), order.getStatus(), productInfo);
     }
 
     // 주문 상세 Entity -> DTO 변환

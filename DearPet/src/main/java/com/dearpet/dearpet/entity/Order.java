@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /*
  * Order Entity
@@ -37,6 +38,9 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;              // 주문 : 사용자 = N : 1
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItem> orderItems; // 주문 : 주문상세 = 1 : N
 
     public enum OrderStatus {
         PENDING, SHIPPED, DELIVERED, CANCELLED
