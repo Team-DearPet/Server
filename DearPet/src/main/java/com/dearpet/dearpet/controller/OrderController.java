@@ -63,4 +63,11 @@ public class OrderController {
         return ResponseEntity.ok(orderItemList);
     }
 
+    // 요청사항 및 배송예정일 추가
+    @PatchMapping("/{orderId}/requirement")
+    public ResponseEntity<OrderDTO> addOrderInfo(@PathVariable("orderId") Long orderId, @RequestBody OrderDTO orderDTO) {
+        OrderDTO addOrderInfo = orderService.addOrderInfo(orderId, orderDTO);
+        return ResponseEntity.ok(addOrderInfo);
+    }
+
 }
