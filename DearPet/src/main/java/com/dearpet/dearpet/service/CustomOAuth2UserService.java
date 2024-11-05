@@ -1,5 +1,7 @@
 package com.dearpet.dearpet.service;
 
+import com.dearpet.dearpet.entity.Cart;
+import com.dearpet.dearpet.repository.CartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -14,6 +16,7 @@ import com.dearpet.dearpet.repository.RoleRepository;
 import com.dearpet.dearpet.repository.UserRepository;
 import com.dearpet.dearpet.security.OAuthAttributes;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -22,11 +25,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final CartRepository cartRepository;
 
     @Autowired
-    public CustomOAuth2UserService(UserRepository userRepository, RoleRepository roleRepository) {
+    public CustomOAuth2UserService(UserRepository userRepository, RoleRepository roleRepository, CartRepository cartRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.cartRepository = cartRepository;
     }
 
     @Override
@@ -53,17 +58,30 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         Optional<Role> defaultRole = roleRepository.findByRoleName("member");
         User.OAuthType oauthType = attributes.getNameAttributeKey().equals("sub") ? User.OAuthType.GOOGLE : User.OAuthType.KAKAO;
 
-        // Log to verify which attributes are being processed
         System.out.println("Processing user: " + attributes.getName());
 
         User user = userRepository.findByUsername(attributes.getName())
                 .map(entity -> entity.update(attributes.getName(), attributes.getName(), attributes.getEmail()))
-                .orElse(attributes.toEntity(defaultRole, oauthType));
+                .orElseGet(() -> {
+                    User newUser = attributes.toEntity(defaultRole, oauthType);
+                    if (newUser.getPassword() == null) {
+                        newUser.setPassword("oauth2user");
+                    }
 
-        if (user.getPassword() == null) {
-            user.setPassword("oauth2user");
-        }
+                    User savedUser = userRepository.save(newUser);
 
-        return userRepository.save(user);
+                    // 새 사용자인 경우 장바구니 생성
+                    Cart newCart = new Cart();
+                    newCart.setUser(savedUser);
+                    newCart.setPrice(BigDecimal.ZERO);
+                    newCart.setStatus(Cart.CartStatus.OPEN);
+                    cartRepository.save(newCart);
+
+                    return savedUser;
+                });
+
+        return user;
     }
+
+
 }
