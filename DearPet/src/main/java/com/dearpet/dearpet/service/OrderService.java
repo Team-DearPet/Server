@@ -138,7 +138,7 @@ public class OrderService {
             orderItem.setOrder(order);
             orderItem.setProduct(product);
             orderItem.setQuantity(productInfo.getQuantity());
-            orderItem.setPrice(product.getPrice());
+            orderItem.setPrice(productInfo.getPrice());
 
             orderItems = List.of(orderItem);
         }
