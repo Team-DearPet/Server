@@ -55,6 +55,13 @@ public class ReviewController {
         return reviewService.updateReview(reviewId, reviewDTO);
     }
 
+    // 특정 사용자가 작성한 리뷰 목록 조회
+    @GetMapping("reviews/user")
+    public List<ReviewDTO> getReviewsByUser(@RequestHeader("Authorization") String token) {
+        Long userId = jwtTokenProvider.getUserId(token); // JWT 토큰에서 userId 추출
+        return reviewService.getReviewsByUserId(userId);
+    }
+
     // 리뷰 삭제
     @DeleteMapping("reviews/{reviewId}")
     public void deleteReview(@PathVariable("reviewId") Long reviewId) {
