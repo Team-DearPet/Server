@@ -107,4 +107,9 @@ public class ReviewService {
         dto.setNickname(review.getUser().getNickname());
         return dto;
     }
+
+    // 특정 사용자가 특정 상품에 대해 리뷰를 작성했는지 확인
+    public boolean hasUserReviewedProduct(Long userId, Long productId) {
+        return reviewRepository.existsByUserUserIdAndProductProductId(userId, productId);
+    }
 }
