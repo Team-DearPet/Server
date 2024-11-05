@@ -11,6 +11,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -89,13 +90,16 @@ public class OrderService {
     // 결제 정보를 바탕으로 주문 생성
     @Transactional
     public void createOrderFromPayment(Long userId, String impUid, List<Long> cartItemIds) {
-        // Payment 테이블에서 결제 정보 가져오기
+
         Payment payment = paymentRepository.findByImpUid(impUid)
                 .orElseThrow(() -> new RuntimeException("Payment not found"));
 
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
         // 주문 생성
         Order order = new Order();
-        order.setUser(payment.getCustomer());  // 결제한 사용자 정보
+        order.setUser(user);
         order.setDate(payment.getPaidAt());
         order.setStatus(Order.OrderStatus.PENDING);
         order.setAddress(payment.getBuyerAddr());
@@ -118,6 +122,20 @@ public class OrderService {
         // 장바구니에서 해당 CartItems 삭제
         cartService.removeCartItems(userId, cartItemIds);
 
+    }
+
+    // 요구사항및 배송 예정일 추가
+    public OrderDTO addOrderInfo(Long orderId, OrderDTO orderDTO) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("order not found"));
+
+        order.setRequirement(orderDTO.getRequirement());
+
+        LocalDateTime eta = order.getDate().plusDays(3);
+        order.setEta(eta);
+
+        orderRepository.save(order);
+        return convertToOrderDTO(order);
     }
 
     // 주문 Entity -> DTO 변환
