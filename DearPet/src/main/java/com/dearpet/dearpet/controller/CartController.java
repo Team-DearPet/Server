@@ -20,12 +20,11 @@ import java.util.List;
 public class CartController {
     private final CartService cartService;
     private final JwtTokenProvider jwtTokenProvider;
-    private final OrderService orderService;
 
-    public CartController(CartService cartService, JwtTokenProvider jwtTokenProvider, OrderService orderService) {
+
+    public CartController(CartService cartService, JwtTokenProvider jwtTokenProvider) {
         this.cartService = cartService;
         this.jwtTokenProvider = jwtTokenProvider;
-        this.orderService = orderService;
     }
 
     // 현재 사용자의 장바구니 조회
