@@ -11,4 +11,5 @@ import java.util.List;
  */
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findByProductProductId(Long productId); // 특정 상품에 대한 리뷰 목록 조회
+    boolean existsByUserUserIdAndProductProductId(Long userId, Long productId); // 특정 사용자가 특정 상품에 대해 리뷰를 작성했는지 확인
 }

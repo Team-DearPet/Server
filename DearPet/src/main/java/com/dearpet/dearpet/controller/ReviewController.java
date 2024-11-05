@@ -42,6 +42,13 @@ public class ReviewController {
         return reviewService.createReview(userId, productId, reviewDTO);
     }
 
+    // 특정 상품에 대해 현재 로그인한 사용자가 이미 리뷰를 작성했는지 확인하는 엔드포인트 추가
+    @GetMapping("/products/{productId}/has-reviewed")
+    public boolean hasUserReviewedProduct(@RequestHeader("Authorization") String token, @PathVariable("productId") Long productId) {
+        Long userId = jwtTokenProvider.getUserId(token); // JWT 토큰에서 userId 추출
+        return reviewService.hasUserReviewedProduct(userId, productId);
+    }
+
     // 리뷰 수정
     @PatchMapping("reviews/{reviewId}")
     public ReviewDTO updateReview(@PathVariable("reviewId") Long reviewId, @RequestBody ReviewDTO reviewDTO) {
