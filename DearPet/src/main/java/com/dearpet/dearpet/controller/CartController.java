@@ -1,6 +1,7 @@
 package com.dearpet.dearpet.controller;
 
 import com.dearpet.dearpet.dto.CartDTO;
+import com.dearpet.dearpet.dto.OrderDTO;
 import com.dearpet.dearpet.service.CartService;
 import com.dearpet.dearpet.security.JwtTokenProvider;
 import com.dearpet.dearpet.service.OrderService;
@@ -57,16 +58,6 @@ public class CartController {
     @DeleteMapping("/items/{cartItemId}")
     public ResponseEntity<Void> deleteCartItem(@PathVariable("cartItemId") Long cartItemId) {
         cartService.deleteCartItem(cartItemId);
-        return ResponseEntity.noContent().build();
-    }
-
-    // 결제한 상품 주문 생성 및 장바구니에서 제거
-    @PostMapping("/checkout")
-    public ResponseEntity<Void> checkout(@RequestHeader("Authorization") String token,
-                                         @RequestParam("impUid") String impUid,
-                                         @RequestParam("cartItemIds") List<Long> cartItemIds) {
-        Long userId = jwtTokenProvider.getUserId(token);
-        orderService.createOrderFromPayment(userId, impUid, cartItemIds);
         return ResponseEntity.noContent().build();
     }
 
