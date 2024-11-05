@@ -1,6 +1,8 @@
 package com.dearpet.dearpet.controller;
 
+import com.dearpet.dearpet.dto.VerificationRequestDTO;
 import com.dearpet.dearpet.service.AddressService;
+import com.dearpet.dearpet.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +12,9 @@ import com.dearpet.dearpet.dto.LoginRequestDTO;
 import com.dearpet.dearpet.service.UserService;
 import com.dearpet.dearpet.security.JwtTokenProvider;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /*
  * User Controller
@@ -25,13 +29,15 @@ public class UserController {
 
     private final UserService userService;
     private final AddressService addressService;
+    private final EmailService emailService;
     private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    public UserController(UserService userService, AddressService addressService, JwtTokenProvider jwtTokenProvider) {
+    public UserController(UserService userService, AddressService addressService, JwtTokenProvider jwtTokenProvider, EmailService emailService) {
         this.userService = userService;
         this.addressService = addressService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.emailService = emailService;
     }
 
     // 회원가입
@@ -55,6 +61,38 @@ public class UserController {
         return ResponseEntity.ok(token);
     }
 
+<<<<<<< Updated upstream
+=======
+    // 이메일 인증번호 발송 엔드포인트
+    @PostMapping("/auth/send-verification-code")
+    public ResponseEntity<Map<String, String>> sendVerificationCode(@RequestBody VerificationRequestDTO request) {
+        String email = request.getEmail();
+        String verificationCode = emailService.generateVerificationCode(); // 인증 코드 생성 메서드
+        emailService.sendEmail(email, "CarePet 이메일 인증 코드", verificationCode);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "인증번호가 발송되었습니다.");
+        response.put("verificationCode", verificationCode);
+
+        return ResponseEntity.ok(response);
+    }
+
+    // 인증번호 확인 엔드포인트
+    @PostMapping("/auth/verify-code")
+    public ResponseEntity<Boolean> verifyCode(@RequestBody VerificationRequestDTO verificationRequestDTO) {
+        boolean isValid = userService.verifyCode(verificationRequestDTO.getEmail(), verificationRequestDTO.getVerificationCode());
+        return ResponseEntity.ok(isValid);
+    }
+
+    // 기존 비밀번호 확인 엔드포인트 추가
+    @PostMapping("/auth/verify-password")
+    public ResponseEntity<Boolean> verifyPassword(@RequestHeader("Authorization") String token, @RequestBody String currentPassword) {
+        String username = jwtTokenProvider.getUsername(token);
+        boolean isPasswordValid = userService.verifyCurrentPassword(username, currentPassword);
+        return ResponseEntity.ok(isPasswordValid);
+    }
+
+>>>>>>> Stashed changes
     // 로그아웃
     @GetMapping("/auth/logout")
     public ResponseEntity<String> logout() {
