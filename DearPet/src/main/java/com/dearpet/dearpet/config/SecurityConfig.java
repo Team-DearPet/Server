@@ -55,7 +55,8 @@ public class SecurityConfig {
                 .sessionManagement(AbstractHttpConfigurer::disable) // 세션 비활성화
                 .authorizeHttpRequests(authorize -> authorize
                         // 모든 사용자에게 허가
-                        .requestMatchers("/manifest.json").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/", "/**").permitAll() // 모든 GET 요청 허용
+                        .requestMatchers("/manifest.json", "/favicon.ico","/static/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/signup").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/auth/check-username").permitAll()
@@ -109,7 +110,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("https://carepet-sepia.vercel.app/signup"));
+        configuration.setAllowedOrigins(Arrays.asList("https://carepet.site"));
         configuration.setAllowedMethods(Arrays.asList("*"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true); // 인증된 요청 허용
