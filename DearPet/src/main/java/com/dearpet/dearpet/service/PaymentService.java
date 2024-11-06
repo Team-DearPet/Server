@@ -28,6 +28,42 @@ public class PaymentService {
     @Value("${iamport.api.secret}")
     private String apiSecret;
 
+    // 환불 요청 메서드 추가
+    public Payment requestRefund(String impUid, BigDecimal cancelAmount, String reason) {
+        String token = getAuthToken(); // 인증 토큰 가져오기
+        RestTemplate restTemplate = new RestTemplate();
+        String cancelUrl = "https://api.iamport.kr/payments/cancel";
+
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("imp_uid", impUid);
+        requestBody.put("amount", cancelAmount);
+        requestBody.put("reason", reason);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<String> requestEntity = new HttpEntity<>(requestBody.toString(), headers);
+
+        ResponseEntity<String> response = restTemplate.exchange(cancelUrl, HttpMethod.POST, requestEntity, String.class);
+        JSONObject jsonResponse = new JSONObject(response.getBody());
+
+        // 환불 성공 시 Payment 엔티티 업데이트
+        if (jsonResponse.getInt("code") == 0) {
+            Payment payment = paymentRepository.findByImpUid(impUid)
+                    .orElseThrow(() -> new RuntimeException("Payment not found"));
+
+            payment.setCancelAmount(cancelAmount);
+            payment.setCancelReason(reason);
+            payment.setCancelledAt(LocalDateTime.now());
+
+            return paymentRepository.save(payment);
+        } else {
+            throw new RuntimeException("Refund failed: " + jsonResponse.getString("message"));
+        }
+    }
+
+
     public Payment savePayment(String impUid) {
         // 아임포트 API 호출하여 결제 데이터 가져오기
         String token = getAuthToken(); // 인증 토큰 가져오기
