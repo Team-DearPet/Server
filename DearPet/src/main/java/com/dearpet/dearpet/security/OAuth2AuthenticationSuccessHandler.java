@@ -61,7 +61,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
             // JWT를 프론트엔드로 리다이렉트 (쿼리 파라미터로 전달)
             response.setHeader("Authorization", "Bearer " + token);
-            response.sendRedirect("https://carepet-psi.vercel.app/oauth2/callback?token=" + token);
+            response.sendRedirect("https://carepet-ten.vercel.app/oauth2/callback?token=" + token);
         } else {
             // 유저가 없을 경우 처리 로직 추가 가능
             throw new IllegalStateException("로그인한 사용자를 찾을 수 없습니다.");
