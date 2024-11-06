@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /*
  * OrderController
@@ -49,10 +50,11 @@ public class OrderController {
         return ResponseEntity.ok(orderDTO);
     }
 
-    // 주문 취소
+    // 주문 취소 엔드포인트
     @PatchMapping("/{orderId}")
-    public ResponseEntity<OrderDTO> cancelOrder(@PathVariable("orderId") Long orderId) {
-        OrderDTO cancelledOrder = orderService.cancelOrder(orderId);
+    public ResponseEntity<OrderDTO> cancelOrder(@PathVariable("orderId") Long orderId, @RequestBody Map<String, String> payload) {
+        String reason = payload.get("reason"); // 환불 사유
+        OrderDTO cancelledOrder = orderService.cancelOrder(orderId, reason);
         return ResponseEntity.ok(cancelledOrder);
     }
 
