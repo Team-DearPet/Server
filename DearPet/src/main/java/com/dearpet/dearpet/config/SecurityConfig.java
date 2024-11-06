@@ -109,7 +109,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("https://carepet-ten.vercel.app/signup"));
+        configuration.setAllowedOrigins(Arrays.asList("https://carepet-sepia.vercel.app/signup"));
         configuration.setAllowedMethods(Arrays.asList("*"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true); // 인증된 요청 허용
