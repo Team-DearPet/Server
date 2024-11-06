@@ -55,6 +55,7 @@ public class SecurityConfig {
                 .sessionManagement(AbstractHttpConfigurer::disable) // 세션 비활성화
                 .authorizeHttpRequests(authorize -> authorize
                         // 모든 사용자에게 허가
+                        .requestMatchers("/manifest.json").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/signup").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/auth/check-username").permitAll()
