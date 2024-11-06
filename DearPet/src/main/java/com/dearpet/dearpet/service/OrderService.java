@@ -36,6 +36,8 @@ public class OrderService {
     private CartService cartService;
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private PaymentService paymentService;
 
     // 사용자 주문 내역 조회
     public List<OrderDTO> getOrderByUsername(String username) {
@@ -71,15 +73,25 @@ public class OrderService {
         return convertToOrderDTO(order);
     }
 
-    // 주문 취소 (주문 상태만 "CANCELLED"로 변경)
-    public OrderDTO cancelOrder(Long orderId) {
+    // 주문 취소 (주문 상태 변경 및 환불 처리)
+    @Transactional
+    public OrderDTO cancelOrder(Long orderId, String reason) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("order not found"));
+                .orElseThrow(() -> new RuntimeException("Order not found"));
 
+        // 결제 정보 확인
+        Payment payment = paymentRepository.findByOrder(order)
+                .orElseThrow(() -> new RuntimeException("Payment not found"));
+
+        // 환불 요청
+        BigDecimal cancelAmount = payment.getAmount(); // 전액 환불 예시
+        Payment refundedPayment = paymentService.requestRefund(payment.getImpUid(), cancelAmount, reason);
+
+        // 주문 상태 업데이트
         order.setStatus(Order.OrderStatus.CANCELLED);
+        orderRepository.save(order);
 
-        Order cancelledOrder = orderRepository.save(order);
-        return convertToOrderDTO(cancelledOrder);
+        return convertToOrderDTO(order);
     }
 
     // 주문한 상품 목록 조회
@@ -110,6 +122,8 @@ public class OrderService {
 
         orderRepository.save(order);
 
+        payment.setOrder(order);
+        paymentRepository.save(payment);
 
         List<OrderItem> orderItems;
 
